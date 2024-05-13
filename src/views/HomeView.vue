@@ -9,7 +9,6 @@ import {
 } from 'echarts/components';
 import VChart, { THEME_KEY } from 'vue-echarts';
 
-
 use([
     CanvasRenderer,
     PieChart,
@@ -20,6 +19,8 @@ use([
 export default {
     data() {
         return {
+            carbonEmissionShow:[],
+            timerForCarbonEmission:null,
             option: {
                 tooltip: {
                     trigger: 'item'
@@ -63,13 +64,45 @@ export default {
             },
         }
     },
+    methods:{
+        clickCarbonEmission(){
+            sessionStorage.setItem('carbonEmission', JSON.stringify(this.carbonEmissionShow));
+            this.$router.push('/CarbonEmission');
+        },
+        fetchCarbonEmission(){
+            fetch("http://localhost:8080/forestage/search",{
+                method: 'GET',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            })
+            .then(res => res.json())
+            .then((data) => {
+                if(data.code != 200){
+                    console.log(data);
+                    return;
+                }
+                this.carbonEmissionShow = data.calculateList;
+                console.log(this.carbonEmissionShow);
+            });
+        },
+    },
     components: {
         VChart,
     },
     provide: {
         [THEME_KEY]: 'light',
     },
-
+    mounted(){
+        this.fetchCarbonEmission();
+        this.timerForCarbonEmission = setInterval(()=>{
+            setTimeout(this.fetchCarbonEmission, 0)
+        }, 60000)
+    },
+    beforeUnmount() {
+        clearInterval(this.timerForCarbonEmission);
+        this.timerForCarbonEmission = null;
+    },
 }
 </script>
 
@@ -109,17 +142,14 @@ export default {
             <div class="carbonEmissions">
                 <table>
                     <tr>
-                        <th colspan=3>碳排放</th>
+                        <th colspan=3 @click="clickCarbonEmission">
+                            碳排放
+                        </th>
                     </tr>
-                    <tr>
-                        <td>　　不鏽鋼304　　</td>
-                        <td>大扁頭 十字孔 機械牙螺絲 #8-32X1</td>
-                        <td>1.2024</td>
-                    </tr>
-                    <tr>
-                        <td>　　不鏽鋼304　　</td>
-                        <td>大扁頭 十字孔 機械牙螺絲 #8-32X1</td>
-                        <td>1.2024</td>
+                    <tr v-for="item in this.carbonEmissionShow">
+                        <td>{{ item.orderNumber }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.carbonEmission }}</td>
                     </tr>
                 </table>
             </div>
