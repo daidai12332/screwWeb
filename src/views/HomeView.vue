@@ -91,7 +91,7 @@ export default {
                     return;
                 }
                 this.carbonEmissionShow = data.calculateList;
-                console.log(this.carbonEmissionShow);
+                // console.log(this.carbonEmissionShow);
             });
         },
         getDataNow(){
@@ -133,7 +133,7 @@ export default {
             this.list2.length = 0
             this.list2.push(data)
             this.voltage = this.list2[0].voltage
-            console.log(this.voltage)
+            // console.log(this.voltage)
             
         })
     },
@@ -150,8 +150,8 @@ export default {
         })
         .then(res => res.json())
         .then((data) =>{
+            this.list3.length = 0
             this.list3.push(data)
-            
             console.log(this.list3)
             
         })
