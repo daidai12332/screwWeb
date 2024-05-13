@@ -1,14 +1,39 @@
 <template>
     <div class="chartArea">
 
-        <p>狀態比例　　週　　月　　年</p>
+        <div class="block">
+            <span>狀態比例　　</span>
+            <span>週</span>
+            <span>　　</span>
+            <span>月</span>
+            <span>　　</span>
+            <span>年</span>
+        </div>
         <v-chart class="chart" :option="this.option1" />
-        <span>平均電流　　週　　月　　年</span>
+
+        <div class="block">
+            <span>平均電流　　</span>
+            <span>週</span>
+            <span>　　</span>
+            <span>月</span>
+            <span>　　</span>
+            <span>年</span>
+        </div>
         <v-chart class="chartLine" :option="this.option2" />
-        <span>平均良率　　週　　月　　年</span>
+
+        <div class="block">
+            <span>平均良率　　</span>
+                <span>週</span>
+                <span>　　</span>
+                <span>月</span>
+                <span>　　</span>
+                <span>年</span>
+        </div>
         <v-chart class="chartLine" :option="this.option3" />
+
     </div>
     <!-- <p>{{this.mName}}</p> -->
+    
 </template>
 
 <script>
@@ -140,19 +165,33 @@ export default {
 
 <style lang="scss" scoped>
     .chartArea{
-        text-align: center;
+        // text-align: center;
         width: 100%;
-        height: 100%;
+        height: 150vh;
+        // position: relative;
+        // border: 1px solid black;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        
+
         .chart {
             width: 100%;
-            height: 40%;
+            height: 25%;
+            background: rgb(249, 248, 248);
+            // .canvas{
+            //     height: 20%;
+            // }
         }
         .chartLine{
             width: 100%;
-            height: 40%;
-            .canvas{
-                height: 30%;
-            }
+            height: 25%;
+            // .canvas{
+            //     height: 20%;
+            // }
+            background: rgb(249, 248, 248);
         }
+
+        
     }
 </style>

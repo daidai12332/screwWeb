@@ -11,7 +11,7 @@
             <div class="topArea">
                 <h3>工廠基本設施</h3>
                 <span>電壓</span>
-                <span>220V</span>
+                <input type="number" v-model="this.voltage">
             </div>
 
             <div class="bottomArea">
@@ -29,7 +29,11 @@
 </template>
 <script>
 export default {
-    
+    data() {
+        return {
+            voltage:220,
+        }
+    },
 }
 </script>
 <style lang="scss" scoped>
@@ -76,6 +80,11 @@ export default {
                     display: inline-block;
                     margin-left: 21%;
                     margin-top: 3%;
+                }
+
+                input{
+                    display: inline-block;
+                    margin-left: 21%;
                 }
             }
 
