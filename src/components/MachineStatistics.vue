@@ -2,32 +2,32 @@
     <div class="chartArea">
         <h2>{{this.mName}}</h2>
         <div class="block">
-            <span>狀態比例(%)　　</span>
-            <span @click="this.statusDataWeek()">週</span>
+            <span class="title">狀態比例(%)　　</span>
+            <span @click="this.statusDataWeek()" class="text">週</span>
             <span>　　</span>
-            <span @click="this.statusDataMonth()">月</span>
+            <span @click="this.statusDataMonth()" class="text">月</span>
             <span>　　</span>
-            <span @click="this.statusDataYear()">年</span>
+            <span @click="this.statusDataYear()" class="text">年</span>
         </div>
         <v-chart class="chart" :option="this.option1" />
 
         <div class="block">
-            <span>平均電流(A)　　</span>
-            <span @click="this.statusDataWeek()">週</span>
+            <span class="title">平均電流(A)　　</span>
+            <span @click="this.statusDataWeek()" class="text">週</span>
             <span>　　</span>
-            <span @click="this.statusDataMonth()">月</span>
+            <span @click="this.statusDataMonth()" class="text">月</span>
             <span>　　</span>
-            <span @click="this.statusDataYear()">年</span>
+            <span @click="this.statusDataYear()" class="text">年</span>
         </div>
         <v-chart class="chartLine" :option="this.option2" />
 
         <div class="block">
-            <span>平均良率(%)　　</span>
-            <span @click="this.statusDataWeek()">週</span>
+            <span class="title">平均良率(%)　　</span>
+            <span @click="this.statusDataWeek()" class="text">週</span>
             <span>　　</span>
-            <span @click="this.statusDataMonth()">月</span>
+            <span @click="this.statusDataMonth()" class="text">月</span>
             <span>　　</span>
-            <span @click="this.statusDataYear()">年</span>
+            <span @click="this.statusDataYear()" class="text">年</span>
         </div>
         <v-chart class="chartLine" :option="this.option3" />
 
@@ -378,6 +378,24 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+
+    .block{
+        // border: 1px solid black;
+        width: 50%;
+        height: 2.5%;
+        // background: rgb(242, 242, 242);
+        
+        .text{
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+            
+            &:hover{
+                width: 10%;
+                background: rgb(220, 220, 220);
+            }
+        }
+    }
 
 
     .chart {

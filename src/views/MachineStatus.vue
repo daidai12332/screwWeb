@@ -10,7 +10,7 @@
                             機台狀況
                         </th>
                     </tr>
-                    <tr v-for="(item, index) in this.machineDataList" @click="this.machineRow(item.name)">
+                    <tr v-for="(item, index) in this.machineDataList" @click="this.machineRow(item.name)" :style="this.hover">
                         <td>{{item.name}}</td>
                         <td v-if="item.status == 'error'" class="error">{{item.status}}</td>
                         <td v-else-if="item.status == 'run'" class="run">{{item.status}}</td>
@@ -68,7 +68,8 @@ export default {
         },
         machineRow(n) {
             this.mName = n
-        }
+        },
+        
     },
     mounted() {
         this.getDataNow()
@@ -118,10 +119,25 @@ export default {
                     color: #6092d8;
                 }
 
+                tr:nth-child(1){
+                    pointer-events: none;
+                }
                 tr:nth-child(odd) {
                     background-color: rgb(242, 242, 242);
+                    &:hover{
+                        background: rgb(204, 204, 204);
+                    }
+                    cursor: pointer;
+                }
+
+                tr:nth-child(even){
+                    cursor: pointer;
+                    &:hover{
+                        background:rgb(198, 197, 197)
+                    }
                 }
             }
+
 
 
         }

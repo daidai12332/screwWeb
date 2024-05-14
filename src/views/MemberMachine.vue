@@ -132,7 +132,7 @@ export default {
         <div class="leftArea">
             <div class="topArea">
                 <h3>工廠基本設施</h3>
-                <span>電壓</span>
+                <span>電壓(V)</span>
                 <input type="number" v-model="this.voltage" @keydown="this. changeVoltage()">
             </div>
 
