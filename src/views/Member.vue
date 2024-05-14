@@ -5,6 +5,41 @@ export default{
         return{
             
         }
+    },
+    methods:{
+        logoutEvent(){
+            fetch("http://localhost:8080/member/logout",{
+                method: 'GET',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            })
+            .then(res => res.json())
+            .then((data) => {
+                if(data.code != 200){
+                    console.log(data);
+                    this.alarmEvent(data.message);
+                    return;
+                }
+                this.successEvent("已登出");
+                sessionStorage.removeItem("account");
+                window.location.reload();
+            });
+        },
+        alarmEvent(str){
+            Swal.fire({
+                icon: "error",
+                title: "失敗",
+                text: str,
+            });
+        },
+        successEvent(str){
+            Swal.fire({
+                icon: "success",
+                title: "成功",
+                text: str,
+            });
+        },
     }
 }
 </script>
@@ -18,6 +53,9 @@ export default{
             </div>
             <div class="order option" @click="this.$router.push('/Member/Order')">
                 <RouterLink class="routeItem" to="/Member/Order" style="text-decoration: none; color: inherit">管理單號</RouterLink>
+            </div>
+            <div class="logout option" @click="logoutEvent">
+                登出
             </div>
         </div>
         <RouterView />

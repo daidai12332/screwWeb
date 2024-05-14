@@ -117,6 +117,11 @@ export default {
             console.log(this.voltage)
         }
     },
+    beforeCreate() {
+            if(!sessionStorage.getItem("account")){
+                this.$router.push('/Login');
+            }
+        },
     mounted() {
         this.getMachineName()
         this. getVoltage()

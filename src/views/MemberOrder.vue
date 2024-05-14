@@ -1,5 +1,6 @@
 <script>
 import Swal from 'sweetalert2'
+import CarbonEmission from './CarbonEmission.vue';
 
 export default{
     data(){
@@ -18,6 +19,19 @@ export default{
             rawArr:[{name:"", amount:"", carbonCoefficient:""}],
             produceNumber:1,
             produceArr:[{name:"", amount:"", carbonCoefficient:""}],
+            carbonEmission:{
+                "條鋼盤元": "公斤(kg)",
+                "線材盤元": "公斤(kg)",
+                "球化條鋼盤元": "公斤(kg)",
+                "球化線材盤元": "公斤(kg)",
+                "鹽酸 (37%)": "公斤(kg)",
+                "天然氣": "立方公尺(m3)",
+                "氫氧化鈉/液鹼 (45%)": "公斤(kg)",
+                "鋅錠": "公斤(kg)",
+                "再生鋅錠": "公斤(kg)",
+                "再生鋅合金錠": "公斤(kg)",
+                "電力": "度"
+            }
         }
     },
     methods:{
@@ -218,6 +232,11 @@ export default{
             });
         },
         // 其他
+        produceIsPowerEvent(index){
+            if(this.produceArr[index].name === "電力"){
+                this.produceArr[count-1].amount = "";
+            }
+        },
         alarmEvent(str){
             Swal.fire({
                 icon: "error",
@@ -268,6 +287,11 @@ export default{
             this.mode = 1;
         }
     },
+    beforeCreate() {
+            if(!sessionStorage.getItem("account")){
+                this.$router.push('/Login');
+            }
+        },
     mounted(){
         this.fetchOrder();
     },
@@ -293,7 +317,7 @@ export default{
                 新增單號
             </button>
         </div>
-        <p v-if="this.mode === 0">點選左側列表操作</p>
+        <p class="defaltText" v-if="this.mode === 0">點選左側列表操作</p>
         <div class="orderDetail" v-if="this.mode !== 0">
             <h1 v-if="this.mode === 1 || this.mode === 2">單號：{{ this.orderWatching.orderNumber }}</h1>
             <h1 v-if="this.mode === 3">新增單號</h1>
@@ -346,12 +370,11 @@ export default{
                         <th scope="col" class="deleteCol" v-if="this.mode === 2 || this.mode === 3"></th>
                     </tr>
                     <tr  v-for="count in this.produceNumber">
-                        <td><select :disabled="this.mode === 1" v-model.lazy="this.produceArr[count-1].name">
+                        <td><select :disabled="this.mode === 1" v-model.lazy="this.produceArr[count-1].name" @change="produceIsPowerEvent(count-1)">
                             <option value="0">請選擇</option>
-                            <option value="天然氣">天然氣</option>
-                            <option value="電力">電力</option>
+                            <option v-for="(item, index) in this.carbonEmission" :value="index">{{ index }}</option>
                         </select></td>
-                        <td><input type="number" :disabled="this.mode === 1" v-model.lazy="this.produceArr[count-1].amount">（<span>立方公尺</span>）</td>
+                        <td><input type="number" :disabled="this.mode === 1 || this.produceArr[count-1].name === '電力'" v-model.lazy="this.produceArr[count-1].amount">（<span>{{ this.carbonEmission[this.produceArr[count-1].name] }}</span>）</td>
                         <td v-if="this.mode === 2 || this.mode === 3"><i class="fa-solid fa-xmark" @click="delRawOrProduce('produce', count-1)"></i></td>
                     </tr>
                     <tr v-if="this.mode === 2 || this.mode === 3">
@@ -398,6 +421,10 @@ export default{
                 background-color: rgb(242, 242, 242);
             }
         }
+    }
+    .defaltText{
+        margin-top: 2vw;
+        margin-left: 15vw;
     }
     .orderDetail{
         margin-top: 2vw;
