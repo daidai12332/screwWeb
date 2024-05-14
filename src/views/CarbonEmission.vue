@@ -2,14 +2,46 @@
 export default{
     data(){
         return{
+            indexWatching: 0,
             carbonEmissionArr:[],
+            // 目前正在查看的單號
             carbonEmissionShow:{},
             timerForCarbonEmission:null,
         }
     },
+    methods:{
+        fetchCarbonEmission(){
+            fetch("http://localhost:8080/forestage/search",{
+                method: 'GET',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            })
+            .then(res => res.json())
+            .then((data) => {
+                if(data.code != 200){
+                    console.log(data);
+                    return;
+                }
+                this.carbonEmissionArr = data.calculateList;
+                this.carbonEmissionShow = data.calculateList[this.indexWatching];
+            });
+        },
+        clickEvent(item, index){
+            this.carbonEmissionShow = item;
+            this.indexWatching = index;
+        }
+    },
     mounted(){
-        this.carbonEmissionArr = JSON.parse(sessionStorage.getItem('carbonEmission'));
-    }
+        this.fetchCarbonEmission();
+        this.timerForCarbonEmission = setInterval(()=>{
+            setTimeout(this.fetchCarbonEmission, 0)
+        }, 60000)
+    },
+    beforeUnmount() {
+        clearInterval(this.timerForCarbonEmission);
+        this.timerForCarbonEmission = null;
+    },
 }
 </script>
 
@@ -23,7 +55,7 @@ export default{
                         碳排放
                     </th>
                 </tr>
-                <tr v-for="item in this.carbonEmissionArr" @click="this.carbonEmissionShow = item">
+                <tr v-for="(item, index) in this.carbonEmissionArr" @click="clickEvent(item, index)">
                     <td>{{ item.orderNumber }}</td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.carbonEmission }}</td>
@@ -31,46 +63,50 @@ export default{
             </table>
         </div>
         <div class="calculateBody">
-            <p class="calculateTarget">螺絲#804的排放係數</p>
+            <p class="calculateTarget">{{ this.carbonEmissionShow.name }}</p>
             <p class="title">原料</p>
             <div class="rawCalculate eachCalculate">
-                <div class="raw each">
+                <div class="raw each" v-for="item in this.carbonEmissionShow.raw">
                     <p class="materialName">
-                        <span>碳鋼</span>
+                        <span>{{ item.name }}</span>
                     </p>
                     <p>
                         <span>係數：</span>
-                        <span class="right">1.9699</span>
+                        <span class="right">{{ item.carbonCoefficient }}</span>
                     </p>
                     <p>
                         <span>使用量：</span>
-                        <span class="right">1.05</span>
+                        <span class="right">{{ item.amount }}</span>
                     </p>
                     <span class="mutiple"><i class="fa-solid fa-xmark"></i></span>
                     <div class="divide"></div>
                     <p>
-                        <span class="right product">2.0684</span>
+                        <span class="right product">{{ item.carbonCoefficient*item.amount }}</span>
                     </p>
                 </div>
             </div>
             <p class="title">製程</p>
             <div class="produceCalculate eachCalculate">
-                <div class="raw each">
+                <div class="produce each" v-for="item in this.carbonEmissionShow.process">
                     <p class="materialName">
-                        <span>電力</span>
+                        <span>{{ item.name }}</span>
                     </p>
                     <p>
                         <span>係數：</span>
-                        <span class="right">1.9699</span>
+                        <span class="right">{{ item.carbonCoefficient }}</span>
                     </p>
                     <p>
                         <span>使用量：</span>
-                        <span class="right">1.05</span>
+                        <span class="right">{{ item.amount }}</span>
+                    </p>
+                    <p>
+                        <span>總量：</span>
+                        <span class="right">1/{{ item.aim*item.weight }}</span>
                     </p>
                     <span class="mutiple"><i class="fa-solid fa-xmark"></i></span>
                     <div class="divide"></div>
                     <p>
-                        <span class="right product">2.0684</span>
+                        <span class="right product">{{ item.carbonCoefficient*item.amount/(item.aim*item.weight) }}</span>
                     </p>
                 </div>
             </div>
@@ -79,7 +115,7 @@ export default{
             </div>
             <div class="result">
                 <span class="left">碳排放總和</span>
-                <span class="center">2.15151</span>
+                <span class="center">{{ this.carbonEmissionShow.carbonEmission }}</span>
             </div>
         </div>
     </div>
