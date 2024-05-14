@@ -10,14 +10,14 @@
                             機台狀況
                         </th>
                     </tr>
-                    <tr v-for="(item, index) in this.names" @click="this.machineRow(item)">
-                        <td>　　{{ item }}</td>
-                        <td>running　　</td>
-                        <td>1</td>
+                    <tr v-for="(item, index) in this.machineDataList" @click="this.machineRow(item.name)">
+                        <td>{{item.name}}</td>
+                        <td v-if="item.status == 'error'" class="error">{{item.status}}</td>
+                        <td v-else-if="item.status == 'run'" class="run">{{item.status}}</td>
+                        <td v-else="item.status == 'idle'" class="idle">{{item.status}}</td>
+                        <td>{{item.orderNumber}}</td>
                     </tr>
-                    
                 </table>
-                
             </div>
         </div>
 
@@ -32,23 +32,52 @@ import MachineStatistics from '../components/MachineStatistics.vue'
 export default {
     data() {
         return {
-            names:["test1","test2"],
-            mName:"",
+            list:[],
+            machineDataList:[],
+            names: ["test1", "test2"],
+            mName: "",
         }
     },
-    components:{
+    components: {
         MachineStatistics
     },
     methods: {
-        machineRow(n){
+        getDataNow() {
+            let obj = {
+
+            }
+            fetch("http://localhost:8080/screw/findmachineDataNow", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(obj)
+            })
+                .then(res => res.json())
+                .then((data) => {
+                    this.list.length = 0;
+                    this.machineDataList.length = 0;
+                    this.list.push(data)
+                    // console.log(this.list[0].machineData)
+                    this.list[0].machineData.forEach((item, index) => {
+                        this.machineDataList.push(item);
+                    });
+
+                    // console.log(this.machineDataList)
+                })
+        },
+        machineRow(n) {
             this.mName = n
         }
+    },
+    mounted() {
+        this.getDataNow()
     },
 }
 </script>
 
 <style lang="scss" scoped>
-    .content {
+.content {
     display: flex;
     width: 100%;
     height: 100vh;
@@ -73,6 +102,20 @@ export default {
 
                 td {
                     padding: 10px;
+                    width: 33%;
+                    text-align: center;
+                }
+
+                .error {
+                    color: #f46464;
+                }
+
+                .run {
+                    color: #73cd4a;
+                }
+
+                .idle {
+                    color: #6092d8;
                 }
 
                 tr:nth-child(odd) {
@@ -84,13 +127,13 @@ export default {
         }
     }
 
-    .rightArea{
+    .rightArea {
         width: 40%;
         height: 150%;
         // border: 1px solid black;
         display: flex;
         flex-direction: column;
-        
+
     }
 }
 </style>

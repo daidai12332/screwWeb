@@ -24,8 +24,11 @@ export default {
             list2:[],
             list3:[],
             voltage:10.0,
+            runElectricity:10.0,
+            idleElectricity:10.0,
+            errorElectricity:10.0,
+            totalElectricity:10.0,
             machineDataList:[],
-
             carbonEmissionShow:[],
             timerForCarbonEmission:null,
 
@@ -34,14 +37,15 @@ export default {
                     trigger: 'item'
                 },
                 legend: {
-                    top: '1%',
+                    top: '3%',
                     left: 'center'
                 },
                 series: [
                     {
                         name: '電度',
                         type: 'pie',
-                        radius: ['50%', '80%'],
+                        top: '15%',
+                        radius: ['50%', '90%'],
                         avoidLabelOverlap: false,
                         label: {
                             show: false,
@@ -59,7 +63,7 @@ export default {
                         },
                         data: [
                             { value: 1048, name: 'Run' },
-                            { value: 735, name: 'Idel' },
+                            { value: 735, name: 'Idle' },
                             { value: 580, name: 'Error' },
                         ],
                         color: [
@@ -108,6 +112,7 @@ export default {
         .then(res => res.json())
         .then((data) =>{
             this.list.length = 0;
+            this.machineDataList.length = 0;
             this.list.push(data)
             // console.log(this.list[0].machineData)
             this.list[0].machineData.forEach((item,index) => {
@@ -152,7 +157,14 @@ export default {
         .then((data) =>{
             this.list3.length = 0
             this.list3.push(data)
-            console.log(this.list3)
+            this.runElectricity = Math.round(this.list3[0].runElectricity)
+            this.idleElectricity = Math.round(this.list3[0].idleElectricity)
+            this.errorElectricity =  Math.round(this.list3[0].errorElectricity)
+            this.totalElectricity = this.runElectricity+this.idleElectricity+this.errorElectricity
+            this.option.series[0].data[0].value = this.runElectricity
+            this.option.series[0].data[1].value = this.idleElectricity
+            this.option.series[0].data[2].value = this.errorElectricity
+            // console.log(this.totalElectricity)
             
         })
     }
@@ -209,7 +221,13 @@ export default {
         <div class="rightArea">
             <div class="chartArea">
                 <h4>當前累積電度</h4>
-                <v-chart class="chart" :option="this.option" />
+                <div class="Electricity">
+                    <div class="total">
+                        <h3>Total</h3>
+                        <p>{{this.totalElectricity}}</p>
+                    </div>
+                    <v-chart class="chart" :option="this.option" />
+                </div>
             </div>
 
             <div class="carbonEmissions">
@@ -300,11 +318,26 @@ export default {
                 background: rgb(242, 242, 242);
             }
 
-            .chart {
-
+            .Electricity{
                 width: 100%;
-                height: 90%;
+                height: 92%;
+                // border: 1px solid black;
+                display: flex;
+
+                .total{
+                    width: 25%;
+                    height: 50%;
+                    // border: 1px solid black;
+                    text-align: center;
+                    margin-top: 15%;
+                }
+                .chart {
+                    width: 60%;
+                    height: 90%;
+                    // border: 1px solid black;
+                }
             }
+
         }
 
         .carbonEmissions {
