@@ -81,7 +81,7 @@ export default{
                     <span class="mutiple"><i class="fa-solid fa-xmark"></i></span>
                     <div class="divide"></div>
                     <p>
-                        <span class="right product">{{ parseInt(item.carbonCoefficient)*parseInt(item.amount) }}</span>
+                        <span class="right product">{{ item.carbonCoefficient*item.amount }}</span>
                     </p>
                 </div>
             </div>
@@ -96,7 +96,8 @@ export default{
                         <span class="right">{{ item.carbonCoefficient }}</span>
                     </p>
                     <p>
-                        <span>使用量：</span>
+                        <span v-if="item.name !== '電力'">使用量：</span>
+                        <span v-if="item.name === '電力'">預估使用量：</span>
                         <span class="right">{{ item.amount }}</span>
                     </p>
                     <p>
@@ -106,7 +107,8 @@ export default{
                     <span class="mutiple"><i class="fa-solid fa-xmark"></i></span>
                     <div class="divide"></div>
                     <p>
-                        <span class="right product">{{ item.carbonCoefficient*item.amount/(this.carbonEmissionShow.aim*this.carbonEmissionShow.weight) }}</span>
+                        <span class="right product" v-if="item.name !== '電力'">{{ Math.round((item.carbonCoefficient*item.amount/(this.carbonEmissionShow.aim*this.carbonEmissionShow.weight/1000))*10000)/10000 }}</span>
+                        <span class="right product" v-if="item.name === '電力'">{{ Math.round(((item.amount / this.carbonEmissionShow.produce * this.carbonEmissionShow.aim) * item.carbonCoefficient / (this.carbonEmissionShow.weight * this.carbonEmissionShow.aim / 1000))*10000)/10000 }}</span>
                     </p>
                 </div>
             </div>

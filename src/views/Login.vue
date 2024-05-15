@@ -47,11 +47,11 @@ export default{
                 text: str,
             });
         },
-        beforeCreate() {
-            if(sessionStorage.getItem("account")){
-                this.$router.push('/Member/Machine');
-            }
-        },
+    },
+    beforeCreate(){
+        if(sessionStorage.getItem("account")){
+            this.$router.push('/Member/Machine'); 
+        }
     }
 }
 </script>

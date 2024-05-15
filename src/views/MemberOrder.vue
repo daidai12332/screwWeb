@@ -165,7 +165,8 @@ export default{
                 produceObj: this.produceArr
             };
             console.log(orderReq);
-            fetch("http://localhost:8080/order/create",{
+            if(this.mode === 3){
+                fetch("http://localhost:8080/order/create",{
                 method: 'POST',
                 headers:{
                     "Content-Type":"application/json"
@@ -179,8 +180,29 @@ export default{
                     this.alarmEvent(data.message);
                     return;
                 }
-                window.location.reload();
+                this.successEvent("成功新增一筆單號");
+                window.location.reload()
             });
+            }
+            if(this.mode === 2){
+                fetch("http://localhost:8080/order/edit",{
+                method: 'POST',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify(orderReq)
+            })
+            .then(res => res.json())
+            .then((data) => {
+                if(data.code != 200){
+                    console.log(data);
+                    this.alarmEvent(data.message);
+                    return;
+                }
+                this.successEvent("成功新增一筆單號");
+                window.location.reload()
+            });                
+            }
         },
         // 哪種編輯模式
         // 新增單號
@@ -221,13 +243,13 @@ export default{
                 })
                 .then(res => res.json())
                 .then((data) => {
-                });
                     if(data.code != 200){
                         this.alarmEvent(data.message);
                         return;
                     }
                     this.successEvent("成功刪除一筆單號");
                     window.location.reload();
+                });
             });
         },
         // 其他
