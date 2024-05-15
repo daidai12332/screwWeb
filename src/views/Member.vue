@@ -1,5 +1,7 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
+import Swal from 'sweetalert2'
+
 export default{
     data(){
         return{

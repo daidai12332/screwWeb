@@ -81,7 +81,7 @@ export default{
                     <span class="mutiple"><i class="fa-solid fa-xmark"></i></span>
                     <div class="divide"></div>
                     <p>
-                        <span class="right product">{{ item.carbonCoefficient*item.amount }}</span>
+                        <span class="right product">{{ parseInt(item.carbonCoefficient)*parseInt(item.amount) }}</span>
                     </p>
                 </div>
             </div>
@@ -101,12 +101,12 @@ export default{
                     </p>
                     <p>
                         <span>總量：</span>
-                        <span class="right">1/{{ item.aim*item.weight }}</span>
+                        <span class="right">1/{{ this.carbonEmissionShow.aim*this.carbonEmissionShow.weight/1000 }}</span>
                     </p>
                     <span class="mutiple"><i class="fa-solid fa-xmark"></i></span>
                     <div class="divide"></div>
                     <p>
-                        <span class="right product">{{ item.carbonCoefficient*item.amount/(item.aim*item.weight) }}</span>
+                        <span class="right product">{{ item.carbonCoefficient*item.amount/(this.carbonEmissionShow.aim*this.carbonEmissionShow.weight) }}</span>
                     </p>
                 </div>
             </div>

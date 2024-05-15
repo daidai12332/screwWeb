@@ -1,6 +1,5 @@
 <script>
 import Swal from 'sweetalert2'
-import CarbonEmission from './CarbonEmission.vue';
 
 export default{
     data(){
