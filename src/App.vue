@@ -4,35 +4,42 @@ import Header from './components/Header.vue'
 </script>
 
 <template>
-  <div class="header">
-    <Header />
-  </div>
-  <br>
-    <div class="content">
-      
-      <RouterView />
+  <div class="headerAndContent">
+    <div class="header">
+      <Header />
     </div>
+    
+      <div class="content">
+        
+        <RouterView />
+      </div>
+  </div>
 
 </template>
 
 <style scoped lang="scss">
-.header {
-  width: 100%;
-  height: 10vh;
+.headerAndContent{
+  display: flex;
   // border: 1px solid black;
+  .header {
+    width: 10%;
+    height: 100vh;
+    // border: 1px solid black;
+    
+  }
   
+  .content{
+    width: 100%;
+    height: 100vh;
+    // border: 1px solid black;
+    // text-align: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    // flex-direction: column;
+    
+  }
 }
-
-// .content{
-//   width: 100%;
-//   height: 100vh;
-//   text-align: center;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   flex-direction: column;
-  
-// }
 
 
 </style>
