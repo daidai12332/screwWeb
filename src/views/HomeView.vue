@@ -46,11 +46,16 @@ export default {
         newestMachineStatus(){
             // 取得機台最新狀況
             const fetchService = useFetchStore();
-            this.machineStatus = fetchService.fetchNewestMachineStatus();
-            console.log(this.machineStatus);
-            this.machineStatusPage = 0;
-            // 更新頁面
-            this.changeMachineShow(0);
+            let getNewestMachine = new Promise(function(resolve, reject) {
+                resolve(fetchService.fetchNewestMachineStatus())
+		    });
+            getNewestMachine.then(function(data) {
+                this.machineStatus = data;
+                console.log(this.machineStatus);
+                this.machineStatusPage = 0;
+                // 更新頁面
+                this.changeMachineShow(0);
+            });
         },
         // 更新機台頁面
         changeMachineShow(page){
