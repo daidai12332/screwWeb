@@ -1,482 +1,408 @@
 <script>
-import * as echarts from 'echarts/core';
-import {
-    TooltipComponent,
-    GridComponent,
-    LegendComponent
-} from 'echarts/components';
-import { BarChart } from 'echarts/charts';
-import { CanvasRenderer } from 'echarts/renderers';
-import VChart, { THEME_KEY } from 'vue-echarts';
+import { useChartStore } from '../stores/chart'
+import { useShowStore } from '../stores/show'
+import { useFetchStore } from '../stores/fetch'
 
-echarts.use([
-    TooltipComponent,
-    GridComponent,
-    LegendComponent,
-    BarChart,
-    CanvasRenderer
-]);
 export default {
     data() {
         return {
-
-            list: [],
-            list2: [],
-            list3: [],
-            voltage: 10.0,
-            runElectricity: 10.0,
-            idleElectricity: 10.0,
-            errorElectricity: 10.0,
-            totalElectricity: 10.0,
-            machineDataList: [],
-            carbonEmissionShow: [],
-            timerForCarbonEmission: null,
-
-            option: {
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                        // Use axis to trigger tooltip
-                        type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
-                    }
-                },
-                legend: {},
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'category',
-                    data: ['0', '3', '5', '7', '9', '11', '13', '15', '17', '19', '21', '23']
-                    
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [
-                    {
-                        name: 'Direct',
-                        type: 'bar',
-                        stack: 'total',
-                        label: {
-                            show: true
-                        },
-                        emphasis: {
-                            focus: 'series'
-                        },
-                        data: [320, 302, 301, 334, 390, 330, 320]
-                    },
-                    {
-                        name: 'Mail Ad',
-                        type: 'bar',
-                        stack: 'total',
-                        label: {
-                            show: true
-                        },
-                        emphasis: {
-                            focus: 'series'
-                        },
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: 'Affiliate Ad',
-                        type: 'bar',
-                        stack: 'total',
-                        label: {
-                            show: true
-                        },
-                        emphasis: {
-                            focus: 'series'
-                        },
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                        name: 'Video Ad',
-                        type: 'bar',
-                        stack: 'total',
-                        label: {
-                            show: true
-                        },
-                        emphasis: {
-                            focus: 'series'
-                        },
-                        data: [150, 212, 201, 154, 190, 330, 410]
-                    },
-                    {
-                        name: 'Search Engine',
-                        type: 'bar',
-                        stack: 'total',
-                        label: {
-                            show: true
-                        },
-                        emphasis: {
-                            focus: 'series'
-                        },
-                        data: [820, 832, 901, 934, 1290, 1330, 1320]
-                    }
-                ]
-            },
+            // 紀錄現在時間 : 0年 1月 2日 3時 4分 5秒
+            date:[],
+            // 讀取時間的計時器
+            timerForLocalDateTime: null,
+            // 紀錄機台即時狀況
+            timerForNewestMachineStatus: null,
+            machineStatus: [],
+            timerForChangeMachinePage: null,
+            machineStatusPage: 0,
+            machineStatusPageData: [],
+            // 紀錄單號即時狀況
+            timerForNewestOrderStatus: null,
+            orderStatus: {},
+            timerForChangeOrderPage: null,
+            orderStatusPage: 0,
+            orderStatusPageData: [],
         }
     },
     methods: {
-        clickCarbonEmission() {
-            sessionStorage.setItem('carbonEmission', JSON.stringify(this.carbonEmissionShow));
-            this.$router.push('/CarbonEmission');
+        // 獲得現在時間
+        getTime(){
+            let date = new Date();
+            this.date[0] = date.getFullYear().toString();
+            this.date[1] = (date.getMonth()+1).toString().padStart(2, '0');
+            this.date[2] = date.getDate().toString().padStart(2, '0');
+            this.date[3] = date.getHours().toString().padStart(2, '0');
+            this.date[4] = date.getMinutes().toString().padStart(2, '0');
+            this.date[5] = date.getSeconds().toString().padStart(2, '0');
         },
-        fetchCarbonEmission() {
-            fetch("http://localhost:8080/forestage/search", {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            })
-                .then(res => res.json())
-                .then((data) => {
-                    if (data.code != 200) {
-                        console.log(data);
-                        return;
-                    }
-                    this.carbonEmissionShow = data.calculateList;
-                    // console.log(this.carbonEmissionShow);
-                });
+        // 建立圖表
+        test(){
+            const chartService = useChartStore();
+            let labels = [];
+            let datasets = [{label: 'worst', data: [200, 16, 4, 11, 8, 9]}]
+            // chartService.stackChart("stackedChartID", data);
         },
-        getDataNow() {
-            let obj = {
-
-            }
-            fetch("http://localhost:8080/screw/findmachineDataNow", {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(obj)
-            })
-                .then(res => res.json())
-                .then((data) => {
-                    this.list.length = 0;
-                    this.machineDataList.length = 0;
-                    this.list.push(data)
-                    // console.log(this.list[0].machineData)
-                    this.list[0].machineData.forEach((item, index) => {
-                        this.machineDataList.push(item);
-                    });
-
-                    // console.log(this.machineDataList)
-                })
+        // 更新機台資料
+        newestMachineStatus(){
+            // 取得機台最新狀況
+            const fetchService = useFetchStore();
+            this.machineStatus = fetchService.fetchNewestMachineStatus();
+            console.log(this.machineStatus);
+            this.machineStatusPage = 0;
+            // 更新頁面
+            this.changeMachineShow(0);
         },
-        getVoltage() {
-            let obj = {
-
-            }
-            fetch("http://localhost:8080/screw/getVoltage", {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(obj)
-            })
-                .then(res => res.json())
-                .then((data) => {
-                    this.list2.length = 0
-                    this.list2.push(data)
-                    this.voltage = this.list2[0].voltage
-                    // console.log(this.voltage)
-
-                })
+        // 更新機台頁面
+        changeMachineShow(page){
+            const fetchService = useFetchStore();
+            this.machineStatusPageData = fetchService.page(this.machineStatus, 17, page);            
         },
-        getElectricity() {
-            let obj = {
-                data_run_avg: this.voltage
-            }
-            fetch(`http://localhost:8080/screw/electricityPeriod?data_run_avg=${this.voltage}`, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(obj)
-            })
-                .then(res => res.json())
-                .then((data) => {
-                    this.list3.length = 0
-                    this.list3.push(data)
-                    this.runElectricity = Math.round(this.list3[0].runElectricity)
-                    this.idleElectricity = Math.round(this.list3[0].idleElectricity)
-                    this.errorElectricity = Math.round(this.list3[0].errorElectricity)
-                    this.totalElectricity = this.runElectricity + this.idleElectricity + this.errorElectricity
-                    this.option.series[0].data[0].value = this.runElectricity
-                    this.option.series[0].data[1].value = this.idleElectricity
-                    this.option.series[0].data[2].value = this.errorElectricity
-                    // console.log(this.totalElectricity)
-
-                })
+        newestOrderStatus(){
+            // 取得單號最新狀況
+            const fetchService = useFetchStore();
+            this.orderStatus = fetchService.fetchNewestOrderStatus();
+            console.log(this.orderStatus);
+            this.orderStatusPage = 0;
+            // 更新頁面
+            this.changeOrderShow(0);
+        },
+        changeOrderShow(page){
+            const fetchService = useFetchStore();
+            this.orderStatusPageData = fetchService.page(this.orderStatus, 5, page);
         }
     },
-    components: {
-        VChart,
-    },
-    provide: {
-        [THEME_KEY]: 'light',
-    },
     mounted() {
-        this.fetchCarbonEmission();
-        this.timerForCarbonEmission = setInterval(() => {
-            setTimeout(this.fetchCarbonEmission, 0)
+        const showService = useShowStore();
+        // 修改所在介面顏色
+        showService.modeChange(0);
+        // 取得時間
+        this.getTime();
+        this.timerForLocalDateTime = setInterval(() => {
+            setTimeout(this.getTime(), 0)
+        }, 1000)
+        // 取得機台最新狀況
+        this.newestMachineStatus();
+        this.timerForNewestMachineStatus = setInterval(() => {
+            setTimeout(this.newestMachineStatus(), 0)
         }, 60000)
-        // this.getDataNow()
-        // this.getVoltage()
+        this.timerForChangeMachinePage = setInterval(() => {
+            setTimeout(this.changeMachineShow(this.machineStatusPage++), 0)
+        }, 10000)
+        // 取得單號最新狀況
+        this.orderStatus = fetchService.fetchNewestOrderStatus();
+        
+        console.log(this.orderStatus);
     },
     beforeUnmount() {
-        clearInterval(this.timerForCarbonEmission);
-        this.timerForCarbonEmission = null;
-    },
-    updated() {
-        // this.getElectricity()
+        clearInterval(this.timerForLocalDateTime);
+        this.timerForLocalDateTime = null;
+        clearInterval(this.timerForNewestMachineStatus);
+        this.timerForNewestMachineStatus = null;
+        clearInterval(this.timerForChangeMachinePage);
+        this.timerForChangeMachinePage = null;
+        clearInterval();
     }
-
 }
 </script>
 
 <template>
-    <div class="content">
-
+    <body>
         <div class="leftArea">
 
             <div class="machineStatus">
-                <p><RouterLink class="routeItem" to="/MachineStatus"
-                                style="text-decoration: none; color: inherit">機台最新資訊</RouterLink></p>
-                <span>　機器編號 </span>
-                <span>　 狀態　</span>
-                <span>　　 單號　</span>
-                <span>　　產量　</span>
-                <span>　更新時間</span>
 
-                <table>
-                    <tr><td>test_1</td>
-                        <td>run</td>
-                        <td>1</td>
-                        <td>1111</td>
-                        <td>12:00</td>
-                    </tr>
-                    <tr v-for="(item, index) in this.machineDataList">
-                        <td>{{ item.name }}</td>
-                        <td v-if="item.status == 'error'" class="error">{{ item.status }}</td>
-                        <td v-else-if="item.status == 'run'" class="run">{{ item.status }}</td>
-                        <td v-else="item.status == 'idle'" class="idle">{{ item.status }}</td>
-                        <td>{{ item.orderNumber }}</td>
-                    </tr>
-                </table>
+                <p class="title" @click="()=>{this.$router.push('/MachineStatus')}">機台最新資訊</p>
+                <div class="detail">
+                    <span class="machineNumber">機器編號</span>
+                    <span class="machineType">機種</span>
+                    <span class="status" style="font-weight: normal;">狀態</span>
+                    <span class="order">單號</span>
+                    <span class="produce">產量</span>
+                    <span class="updateTime">更新時間</span>
+                </div>
+                <!-- 最多可以 17 筆 -->
+                <div class="content">
+                    <div class="item" :class="item.status" v-for="item in machineStatusPageData">
+                        <span class="machineNumber">{{ item.name }}</span>
+                        <span class="machineType">{{ item.type }}</span>
+                        <span class="status">{{ item.status }}</span>
+                        <span class="order">{{ item.orderNumber }}</span>
+                        <span class="produce">{{ item.pass }}</span>
+                        <span class="updateTime">{{ item.time }}</span>
+                    </div>
+                </div>
+
+                <div class="button">
+                    <button :class="{now: machineStatusPage===i-1}" v-for="i in Math.ceil(this.machineStatus.length()/17)+1"></button>
++                    <span>( 共 {{ this.machineStatus.length() }} 筆 )</span>
+                </div>
             </div>
         </div>
 
         <div class="rightArea">
-            <div class="chartArea">
-                <h4>今日累積數值</h4>
-                <div class="Electricity">
-                    <div class="time">
-                        <h3>Total</h3>
-                        <p>{{ this.totalElectricity }}</p>
+            <div class="todayBlock">
+                <p class="title">今日累積數值</p>
+                <div class="content">
+                    <div class="left">
+                        <div class="clock">
+                            <div class="date">
+                                {{ this.date[0] }} 年 {{ this.date[1] }} 月 {{ this.date[2] }} 日
+                            </div>
+                            <div class="time">
+                                {{ this.date[3] }}:{{ this.date[4] }}:{{ this.date[5] }}
+                            </div>                            
+                        </div>
                     </div>
-                    <v-chart class="chart" :option="this.option" />
-                    <div class="totalData">
-                        <div class="block">
-                            <p >累積耗電量</p>
-                            <div class="innerBlock">
-                                <p >1312
-                                    <p>瓦</p>
-                                </p>
-                                
-                            </div>
-                        </div>
-                        <div class="block">
-                            <p>累積生產量</p>
-                            <div class="innerBlock">
-                                <p class="result">1424
-                                    <p>顆</p>
-                                </p>
-                            </div>
-                        </div>
+                    <div class="center">
+                        <canvas id="stackedChartID" style="scale: 0.5;"></canvas>
+                    </div>
+                    <div class="right">
+
                     </div>
                 </div>
             </div>
 
-            <div class="carbonEmissions">
-                <table>
-                    <tr>
-                        <th colspan=3 @click="clickCarbonEmission">
-                            碳排放
-                        </th>
-                    </tr>
-                    <tr v-for="item in this.carbonEmissionShow">
-                        <td>{{ item.orderNumber }}</td>
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.carbonEmission }}</td>
-                    </tr>
-                </table>
+            <div class="orderBlock">
+                <p class="title">單號最新資訊</p>
+                <div class="detail">
+                    <span class="orderNumber">單號</span>
+                    <span class="aim">目標生產量</span>
+                    <span class="sofar">累積產量</span>
+                    <span class="passRatio">良率</span>
+                    <span class="produceMachine">生產機台</span>
+                    <span class="estimateTime">預估完成時間</span>
+                    <span class="updateTime2">更新時間</span>
+                </div>
+
+                <div class="content">
+                    <div class="item" v-for="item in this.orderStatusPageData">
+                        <span class="orderNumber">{{ item.orderNumber }}</span>
+                        <span class="aim">{{ item.aim }}</span>
+                        <span class="sofar">{{ item.pass }}</span>
+                        <span class="passRatio">{{ item.passAvg }}</span>
+                        <span class="produceMachine">{{ item.name }}</span>
+                        <span class="estimateTime">{{ item.finishTime }}</span>
+                        <span class="updateTime2">{{ item.updateTime }}</span>
+                    </div>
+                </div>
+
+                <div class="button">
+                    <button :class="{now: orderStatusPage === i-1}" v-for="i in Math.ceil(this.orderStatus.length()/10)+1"></button>
+                    <span>( 共 {{ this.orderStatus.length() }} 筆 )</span>
+                </div>
+
             </div>
         </div>
-    </div>
+    </body>
 </template>
 
 <style lang="scss" scoped>
-.content {
+body{
     display: flex;
     width: 100%;
-    height: 100vh;
-    margin-top: 3%;
-    // border: 1px solid black;
-    // justify-content: space-evenly;
-
+    padding-top: 2vw;
     .leftArea {
-        width: 30%;
-        height: 90%;
-        margin-left: 4%;
-        // border: 1px solid black;
+        width: 32%;
+        margin-left: 2vw;
+        margin-right: 2vw;
         .machineStatus {
             width: 100%;
             height: 100%;
-            // border: 1px solid black;
-
-            p{
-                width: 100%;
-                height: 5%;
-                border: 1px solid black;
-                text-align: center;
-                padding-top: 1%;
-                border-radius: 5px;
+            .title{
+                background-color: var(--yellow);
             }
-            span{
-                font-size: 15px;
+            .content{
+                height: 84vh;
             }
-            table {
-                width: 100%;
-                border: 2px solid rgb(206, 206, 206);
-                border-collapse: collapse;
-
-                td {
-                    // padding: 5px;
-                    width: 13%;
-                    text-align: center;
-                }
-
-                .error {
-                    color: #f46464;
-                }
-
-                .run {
-                    color: #73cd4a;
-                }
-
-                .idle {
-                    color: #6092d8;
-                }
-
-                tr:nth-child(odd) {
-                    background-color: rgb(242, 242, 242);
-                }
-            }
-
-
         }
     }
-
     .rightArea {
-        width: 60%;
-        height: 90%;
-        // border: 1px solid black;
-        margin-left: 3%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-
-        .chartArea {
-            width: 100%;
-            height: 44%;
-            border: 2px solid rgb(206, 206, 206);
-
-            h4 {
-
-                text-align: center;
-                background: rgb(242, 242, 242);
+        width: 61%;
+        .todayBlock{
+            .title{
+                background-color: var(--red);
             }
-
-            .Electricity {
-                width: 100%;
-                height: 92%;
-                // border: 1px solid black;
-                display: flex;
-
-                .time {
-                    width: 20%;
-                    height: 50%;
-                    // border: 1px solid black;
-                    text-align: center;
-                    margin-top: 15%;
-                }
-
-                .chart {
-                    width: 58%;
-                    height: 90%;
-                    // border: 1px solid black;
-                }
-
-                .totalData{
-                    width: 25%;
-                    height: 80%;
-                    // border: 1px solid black;
-                    margin-top: 2%;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-around;
-                    .block{
-                        display: flex;
-                        width: 100%;
-                        height: 40%;
-                        align-items:center;
-                        // border: 1px solid black;
-
-                        .innerBlock{
-                            text-align: center;
-                                padding-top: 7%;
-                                width: 35%;
-                                height: 70%;
-                                border-radius: 100%;
-                                border: 10px solid black;
-                                margin-left: 8%;
-                            
-                        }
-
-                        p{
-                            // border: 1px solid black;
-                        }
-                        
-                    }
-                }
+            .content{
+                height: 30vh;
             }
-
         }
-
-        .carbonEmissions {
-            width: 100%;
-            height: 48%;
-            // border: 1px solid black;
-
-            table {
-                width: 100%;
-                border: 2px solid rgb(206, 206, 206);
-                border-collapse: collapse;
-
-                td {
-                    padding: 10px;
-                }
-
-                tr:nth-child(odd) {
-                    background-color: rgb(242, 242, 242);
-                }
+        .orderBlock{
+            margin-top: 1.5vw;
+            .title{
+                background-color: var(--blue);
             }
-
+            .content{
+                height: 47.8vh;
+            }
         }
     }
 }
+
+.title{
+    height: 1.5vw;
+    color: white;
+    text-align: center;
+    line-height: 1.6vw;
+    font-size: 0.95vw;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 0.5vw;
+}
+
+.detail{
+    span{
+        display: inline-block;
+        font-size: 0.9vw;
+        text-align: center;
+        padding-left: auto;
+    }
+}
+
+.content {
+    padding-top: 1.2vw;
+    height: 10vh;
+    border: 1px solid #5E5E5E;
+    border-radius: 10px;
+    .item{
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.3vw;
+        span{
+            display: inline-block;
+            font-size: 1.1vw;
+            text-align: center;
+            height: 2vw;
+            line-height: 2vw;
+        }
+    }
+}
+
+div{
+    .machineNumber{
+        width: 5vw;
+        margin-left: 1.75vw;
+    }
+    .machineType{
+        width: 5vw;
+    }
+    .status{
+        width: 3.5vw;
+        font-weight: 500;
+    }
+    .order{
+        width: 3vw;
+    }
+    .produce{
+        width: 3vw;
+    }
+    .updateTime{
+        width: 7vw;
+    }
+    .updateTime2{
+        width: 10vw;
+    }
+    .orderNumber{
+        width: 5vw;
+        margin-left: 1.76vw;
+    }
+    .aim{
+        width: 10vw;
+    }
+    .sofar{
+        width: 10vw;
+    }
+    .passRatio{
+        width: 3vw;
+    }
+    .produceMachine{
+        width: 10vw;
+    }
+    .estimateTime{
+        width: 6vw;
+    }
+}
+
+.machineStatus{
+    .item{
+        .machineType{
+            font-size: 0.7vw;
+        }
+    }
+    .idle{
+        .status{
+            color: var(--blue);
+        }
+    }
+    .run{
+        .status{
+            color: var(--green);
+        }
+    }
+    .error{
+        position: relative;
+        &::after{
+            content: "";
+            width: 96%;
+            height: 96%;
+            position: absolute;
+            left: 2%;
+            top: 2%;
+            border-radius: 15px;
+            background-color: var(--red);
+            z-index: -1;
+            -webkit-animation-name: errorAlarm;
+            -webkit-animation-duration: 1.5s;
+            -webkit-animation-iteration-count: infinite;
+            -webkit-animation-direction: alternate;
+            -webkit-animation-timing-function: ease;
+            -webkit-animation-play-state: running;
+        }
+    }
+}
+
+.button{
+    display: flex;
+    justify-content: center;
+    button{
+        margin-left: 0.2vw;
+        margin-right: 0.2vw;
+        margin-top: 0.8vw;
+        display: block;
+        width: 0.5vw;
+        height: 0.5vw;
+        background-color: white;
+        border: 1px solid #5E5E5E;
+        border-radius: 50%;
+    }
+    span{
+        margin-left: 0.5vw;
+        line-height: 2vw;
+        font-size: 0.8vw;
+    }
+    .error{
+        border-color: var(--red);
+        -webkit-animation-name: errorAlarm;
+        -webkit-animation-duration: 1.5s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-direction: alternate;
+        -webkit-animation-timing-function: ease;
+        -webkit-animation-play-state: running;
+    }
+    .now{
+        background-color: #5E5E5E;
+    }
+}
+
+@-webkit-keyframes errorAlarm{
+    0% { 
+        background-color: white;
+    }
+    50%{ background-color: var(--red); }
+    70%{ 
+        background-color: white;
+    }
+    100%{ background-color: var(--red); }
+}
+
+
 </style>
