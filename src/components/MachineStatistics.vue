@@ -1,41 +1,3 @@
-<template>
-    <div class="chartArea">
-        <h2>{{this.mName}}</h2>
-        <div class="block">
-            <span class="title">狀態比例(%)　　</span>
-            <span @click="this.statusDataWeek()" class="text">週</span>
-            <span>　　</span>
-            <span @click="this.statusDataMonth()" class="text">月</span>
-            <span>　　</span>
-            <span @click="this.statusDataYear()" class="text">年</span>
-        </div>
-        <v-chart class="chart" :option="this.option1" />
-
-        <div class="block">
-            <span class="title">平均電流(A)　　</span>
-            <span @click="this.statusDataWeek()" class="text">週</span>
-            <span>　　</span>
-            <span @click="this.statusDataMonth()" class="text">月</span>
-            <span>　　</span>
-            <span @click="this.statusDataYear()" class="text">年</span>
-        </div>
-        <v-chart class="chartLine" :option="this.option2" />
-
-        <div class="block">
-            <span class="title">平均良率(%)　　</span>
-            <span @click="this.statusDataWeek()" class="text">週</span>
-            <span>　　</span>
-            <span @click="this.statusDataMonth()" class="text">月</span>
-            <span>　　</span>
-            <span @click="this.statusDataYear()" class="text">年</span>
-        </div>
-        <v-chart class="chartLine" :option="this.option3" />
-
-    </div>
-    
-
-</template>
-
 <script>
 import * as echarts from 'echarts/core';
 import {
@@ -65,8 +27,8 @@ echarts.use([
 ]);
 export default {
     data() {
-        
         return {
+            week: "",
             list:[],
             dataRunAvg:0.0,
             dataIdleAvg:0.0,
@@ -84,7 +46,7 @@ export default {
                 dataset: {
                     source: [
                         ['status', 'run', 'idle', 'error'],
-                        ['週', '11', '22', '33'],
+                        ["這是周", '11', '22', '33'],
                         
 
                     ]
@@ -129,10 +91,8 @@ export default {
                 },
                 dataset: {
                     source: [
-                        ['status', 'Current Average', ],
-                        ['週', '11'],
-                        
-
+                        ['status', '平均電流', ],
+                        ["這是周", '11'],
                     ]
                 },
                 xAxis: { type: 'category',},
@@ -161,8 +121,8 @@ export default {
                 },
                 dataset: {
                     source: [
-                        ['status', 'Production yield'],
-                        ['週', '11'],
+                        ['status', '平均良率'],
+                        ["這是周", '11'],
                         
                     ]
                 },
@@ -221,7 +181,7 @@ export default {
                     this.dataRunAvg = Math.round(this.dataRunAvg/this.statusAvgSum*100)
                     this.dataIdleAvg = Math.round(this.dataIdleAvg/this.statusAvgSum*100)
                     this.dataErrorAvg = 100 - this.dataRunAvg - this.dataIdleAvg
-                    this.option1.dataset.source[1][0] = '週'
+                    this.option1.dataset.source[1][0] = this.week;
                     this.option1.dataset.source[1][1] = this.dataRunAvg
                     this.option1.dataset.source[1][2] = this.dataIdleAvg
                     this.option1.dataset.source[1][3] = this.dataErrorAvg
@@ -233,7 +193,7 @@ export default {
                         
                     });
                     this.dataCurrentAvg = this.dataCurrentAvg/this.list[0].equipmentList.length
-                    this.option2.dataset.source[1][0] = '週'
+                    this.option2.dataset.source[1][0] = this.week;
                     this.option2.dataset.source[1][1] = this.dataCurrentAvg.toFixed(6)
                     // console.log(this.dataCurrentAvg.toFixed(6))
 
@@ -244,7 +204,7 @@ export default {
                         
                     });
                     this.dataPassAvg = this.dataPassAvg/this.list[0].equipmentList.length*100
-                    this.option3.dataset.source[1][0] = '週'
+                    this.option3.dataset.source[1][0] = this.week;
                     this.option3.dataset.source[1][1] = this.dataPassAvg.toFixed(2)
                     // console.log(this.list[0].equipmentList)
                     
@@ -275,7 +235,7 @@ export default {
                     this.dataRunAvg = Math.round(this.dataRunAvg/this.statusAvgSum*100)
                     this.dataIdleAvg = Math.round(this.dataIdleAvg/this.statusAvgSum*100)
                     this.dataErrorAvg = 100 - this.dataRunAvg - this.dataIdleAvg
-                    this.option1.dataset.source[1][0] = '月'
+                    this.option1.dataset.source[1][0] = this.month
                     this.option1.dataset.source[1][1] = this.dataRunAvg
                     this.option1.dataset.source[1][2] = this.dataIdleAvg
                     this.option1.dataset.source[1][3] = this.dataErrorAvg
@@ -287,7 +247,7 @@ export default {
                         
                     });
                     this.dataCurrentAvg = this.dataCurrentAvg/this.list[0].equipmentList.length
-                    this.option2.dataset.source[1][0] = '月'
+                    this.option2.dataset.source[1][0] = this.month
                     this.option2.dataset.source[1][1] = this.dataCurrentAvg.toFixed(6)
                     // console.log(this.dataCurrentAvg.toFixed(6))
 
@@ -298,7 +258,7 @@ export default {
                         
                     });
                     this.dataPassAvg = this.dataPassAvg/this.list[0].equipmentList.length*100
-                    this.option3.dataset.source[1][0] = '月'
+                    this.option3.dataset.source[1][0] = this.month
                     this.option3.dataset.source[1][1] = this.dataPassAvg.toFixed(2)
                     // console.log(this.list[0].equipmentList)
                     
@@ -329,7 +289,7 @@ export default {
                     this.dataRunAvg = Math.round(this.dataRunAvg/this.statusAvgSum*100)
                     this.dataIdleAvg = Math.round(this.dataIdleAvg/this.statusAvgSum*100)
                     this.dataErrorAvg = 100 - this.dataRunAvg - this.dataIdleAvg
-                    this.option1.dataset.source[1][0] = '年'
+                    this.option1.dataset.source[1][0] = this.year
                     this.option1.dataset.source[1][1] = this.dataRunAvg
                     this.option1.dataset.source[1][2] = this.dataIdleAvg
                     this.option1.dataset.source[1][3] = this.dataErrorAvg
@@ -341,7 +301,7 @@ export default {
                         
                     });
                     this.dataCurrentAvg = this.dataCurrentAvg/this.list[0].equipmentList.length
-                    this.option2.dataset.source[1][0] = '年'
+                    this.option2.dataset.source[1][0] = this.year
                     this.option2.dataset.source[1][1] = this.dataCurrentAvg.toFixed(6)
                     // console.log(this.dataCurrentAvg.toFixed(6))
                     
@@ -352,7 +312,7 @@ export default {
                         
                     });
                     this.dataPassAvg = this.dataPassAvg/this.list[0].equipmentList.length*100
-                    this.option3.dataset.source[1][0] = '年'
+                    this.option3.dataset.source[1][0] = this.year
                     this.option3.dataset.source[1][1] = this.dataPassAvg.toFixed(2)
                     // console.log(this.list[0].equipmentList)
                     
@@ -360,13 +320,65 @@ export default {
         },
     },
     mounted() {
-        
+        let dateLastWeek = new Date();
+        dateLastWeek.setDate(dateLastWeek.getDate()-7);
+        let dateLastMonth = new Date();
+        dateLastMonth.setMonth(dateLastMonth.getMonth()-1);
+        let dateLastYear = new Date();
+        dateLastYear.setFullYear(dateLastYear.getFullYear()-1);
+        let dateNow = new Date();
+
+        this.week = dateLastWeek.getMonth().toString()+ '/' + dateLastWeek.getDate().toString() + "-" + dateNow.getMonth().toString() + '/' + dateNow.getDate().toString();
+        this.month = dateLastMonth.getFullYear().toString() + '/' + dateLastMonth.getMonth().toString() + "-" + dateNow.getFullYear().toString() + '/' + dateNow.getMonth().toString();
+        this.year = dateLastYear.getFullYear().toString() + '-' + dateNow.getFullYear().toString();4
+
+        this.option1.dataset.source[1][0] = this.week;
+        this.option2.dataset.source[1][0] = this.week;
+        this.option3.dataset.source[1][0] = this.week;
     },
     updated() {
         
     },
 }
 </script>
+
+<template>
+    <div class="chartArea">
+        <h2>{{this.mName}}</h2>
+        <div class="block">
+            <span class="title">狀態比例(%)　　</span>
+            <span @click="this.statusDataWeek()" class="text">週</span>
+            <span>　　</span>
+            <span @click="this.statusDataMonth()" class="text">月</span>
+            <span>　　</span>
+            <span @click="this.statusDataYear()" class="text">年</span>
+        </div>
+        <v-chart class="chart" :option="this.option1" />
+
+        <div class="block">
+            <span class="title">平均電流(A)　　</span>
+            <span @click="this.statusDataWeek()" class="text">週</span>
+            <span>　　</span>
+            <span @click="this.statusDataMonth()" class="text">月</span>
+            <span>　　</span>
+            <span @click="this.statusDataYear()" class="text">年</span>
+        </div>
+        <v-chart class="chartLine" :option="this.option2" />
+
+        <div class="block">
+            <span class="title">平均良率(%)　　</span>
+            <span @click="this.statusDataWeek()" class="text">週</span>
+            <span>　　</span>
+            <span @click="this.statusDataMonth()" class="text">月</span>
+            <span>　　</span>
+            <span @click="this.statusDataYear()" class="text">年</span>
+        </div>
+        <v-chart class="chartLine last" :option="this.option3" />
+
+    </div>
+    
+
+</template>
 
 <style lang="scss" scoped>
 .chartArea {
@@ -375,21 +387,24 @@ export default {
     height: 150vh;
     // position: relative;
     // border: 1px solid black;
+    margin-top: 2vw;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-
+    margin-left: 2vw;
     .block{
         // border: 1px solid black;
         width: 50%;
         height: 2.5%;
         // background: rgb(242, 242, 242);
-        
+        .title{
+            font-size: 1vw;
+        }
         .text{
             cursor: pointer;
             display: inline-block;
             text-align: center;
-            
+            font-size: 0.8vw;
             &:hover{
                 width: 10%;
                 background: rgb(220, 220, 220);
@@ -399,7 +414,7 @@ export default {
 
 
     .chart {
-        width: 100%;
+        width: 90%;
         height: 25%;
         background: rgb(249, 248, 248);
         // .canvas{
@@ -408,7 +423,7 @@ export default {
     }
 
     .chartLine {
-        width: 100%;
+        width: 90%;
         height: 25%;
         // .canvas{
         //     height: 20%;
@@ -416,6 +431,9 @@ export default {
         background: rgb(249, 248, 248);
     }
 
+}
 
+.last{
+    margin-bottom: 2vw;
 }
 </style>

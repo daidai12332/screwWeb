@@ -21,7 +21,6 @@ import Header from './components/Header.vue'
   .header {
     width: 5%;
   }
-  
   .content{
     width: 100%;
   }

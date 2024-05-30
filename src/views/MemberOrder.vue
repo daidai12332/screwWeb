@@ -292,6 +292,7 @@ export default{
                     return;
                 }
                 this.orderList = data.screwMaterialList;
+                console.log(this.orderList);
             });
         },
         // 確認單號
@@ -320,25 +321,35 @@ export default{
 </script>
 
 <template>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <div class="orderBody">
-        <div class="orderList">
-            <table>
-                <tr>
-                    <th colspan=2>
-                        單號列表
-                    </th>
-                </tr>
-                <tr v-for="item in this.orderList" @click="this.checkOrder(item)" class="contain">
-                    <td>{{ item.orderNumber }}</td>
-                    <td>{{ item.name }}</td>
-                </tr>
-            </table>
-            <button type="button" class="addOrder" @click="addBtnClickEvent">
-                新增單號
-            </button>
+<body>
+    <div class="leftArea">
+        <div class="machineStatus">
+            <p class="title">訂單管理</p>
+            <div class="detail">
+                <span class="machineNumber">單號</span>
+                <span class="machineType">名稱</span>
+            </div>
+    
+            <!-- 最多可以 17 筆 -->
+            <div class="content">
+                <div class="item" v-for="item in this.orderList" @click="this.checkOrder(item.name)">
+                    <span class="machineNumber">{{ item.orderNumber }}</span>
+                    <span class="status" :class="item.status">{{ item.name }}</span>
+                </div>
+            </div>
+
+        <div class="button">
+            <button class="now" v-for="i in 1"></button>
+            <span>( 共 {{ this.orderList.length }} 筆 )</span>
         </div>
+        </div>
+        <div class="addMachine" @click="addBtnClickEvent">新增</div>
+    </div>
+
+    <div class="rightArea">
         <p class="defaltText" v-if="this.mode === 0">點選左側列表操作</p>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
         <div class="orderDetail" v-if="this.mode !== 0">
             <h1 v-if="this.mode === 1 || this.mode === 2">單號：{{ this.orderWatching.orderNumber }}</h1>
             <h1 v-if="this.mode === 3">新增單號</h1>
@@ -413,135 +424,288 @@ export default{
             </div>
         </div>
     </div>
+</body>
 </template>
 
 <style lang="scss" scoped>
-.orderBody{
+body{
     display: flex;
-    .orderList{
+    width: 100%;
+    .leftArea {
+        width: 12.5%;
         margin-top: 2vw;
         margin-left: 2vw;
-        width: 20vw;;
-        .addOrder{
-            width: 7vw;
-            height: 3vw;
-            margin-top: 1vw;
-            margin-left: 6.4vw;
-        }
-        table {
+        margin-right: 2vw;
+        .machineStatus {
             width: 100%;
-            border: 2px solid rgb(206, 206, 206);
-            border-collapse: collapse;
-            .contain{
-                cursor: pointer;
+            height: 88%;
+            .title{
+                background-color: var(--green);
             }
-            td {
-                padding: 10px;
-            }
-            tr:nth-child(odd) {
-                background-color: rgb(242, 242, 242);
+            .content{
+                height: 75vh;
             }
         }
-    }
-    .defaltText{
-        margin-top: 2vw;
-        margin-left: 15vw;
-    }
-    .orderDetail{
-        margin-top: 2vw;
-        margin-left: 4vw;
-        h1{
-                margin-bottom: 2vw;
-            }
-        .oneLine{
-            margin-bottom: 1vw;
-            font-size: 1.3vw;
-            label{
-                margin-right: 2vw;
-            }
-            input{
-                padding-top: 0.2vw;
-                padding-bottom: 0.2vw;
-                padding-left: 0.5vw;
-                width: 20vw;
-                font-size: 1.3vw;   
-                margin-right: 1vw;
-            }             
-        }
-        .inputDetail{
-            table {
-                margin-top: 2vw;
-                width: 100%;
-                border: 2px solid rgb(206, 206, 206);
-                border-collapse: collapse;
-                td {
-                    padding: 10px;
-                    text-align: center;
-                    input{
-                        font-size: 1.3vw;
-                        padding: 0.2vw;
-                        text-align: center;
-                    }
-                    select{
-                        width: 100%;
-                        font-size: 1.3vw;
-                        padding: 0.2vw;
-                        text-align: center;                        
-                    }
-                    .fa-xmark{
-                        font-size: 1.5vw;
-                        margin-right: 1vw;
-                        &:hover{
-                            color: red;
-                            cursor: pointer;
-                        }
-                    }
-                }
-                tr{
-                    .deleteCol{
-                        width: 1vw;
-                    }
-                    .name{
-                        width: 18vw;
-                    }
-                    .addBtn{
-                        cursor: pointer;
-                        margin-left: 3vw;
-                        margin-top: 0.1vw;
-                        width: 95%;
-                        height: 2vw;                   
-                    }
-                }
-                tr:nth-child(1) {
-                    background-color: rgb(242, 242, 242);
-                    height: 2vw;
-                }
-                .inputTitle{
-                    width: 2vw;
-                    font-size: 1.3vw;   
-                    padding-left: 0.5vw;
-                    padding-right: 0.5vw;
-                }
-            }
-            // .addBtn{
-            //         margin-left: 3vw;
-            //         margin-top: 0.1vw;
-            //         border: 1px solid black;
-            //         background-color: rgb(242, 242, 242);
-            //         width: 95%;
-            //         height: 2vw;                   
-            //     }
-        }
-        .operateButton{
-            margin-top: 2vw;
+        .addMachine{
+            margin-left: 2.8vw;
+            font-size: 1vw;
+            cursor: pointer;
+            margin-top: 3vh;
             text-align: center;
-            button{
-                width: 7vw;
-                height: 4vw;
-                font-size: 1.2vw;
-                cursor: pointer;
+            line-height: 2vw;
+            color: var(--green);
+            font-weight: 600;
+            width: 50%;
+            height: 2vw;
+            border: 2px solid var(--green);
+            border-radius: 10px;
+            &:hover{
+                background-color: #f6f4f4;
             }
         }
     }
 }
+
+.title{
+    height: 1.5vw;
+    color: white;
+    text-align: center;
+    line-height: 1.6vw;
+    font-size: 0.95vw;
+    border-radius: 5px;
+    margin-bottom: 0.5vw;
+}
+
+.detail{
+    span{
+        display: inline-block;
+        font-size: 0.9vw;
+        text-align: center;
+        padding-left: auto;
+    }
+}
+
+.content {
+    padding-top: 1.2vw;
+    height: 10vh;
+    border: 1px solid #5E5E5E;
+    border-radius: 10px;
+    .item{
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.3vw;
+        &:hover{
+            cursor: pointer;
+            &::after{
+                content: "";
+                width: 96%;
+                height: 96%;
+                position: absolute;
+                left: 2%;
+                top: 2%;
+                border-radius: 15px;
+                background-color: #eae8e8;
+                z-index: -1;
+            }
+        }
+        span{
+            display: inline-block;
+            font-size: 1.1vw;
+            text-align: center;
+            height: 2vw;
+            line-height: 2vw;
+        }
+    }
+}
+
+.itemNow{
+    &::after{
+                content: "";
+                width: 96%;
+                height: 96%;
+                position: absolute;
+                left: 2%;
+                top: 2%;
+                border-radius: 15px;
+                background-color: #eae8e8;
+                z-index: -1;
+            }
+}
+
+div{
+    .machineNumber{
+        width: 5vw;
+        margin-left: 1.3vw;
+    }
+    .machineType{
+        width: 5vw;
+    }
+}
+
+.button{
+    display: flex;
+    justify-content: center;
+    button{
+        margin-left: 0.2vw;
+        margin-right: 0.2vw;
+        margin-top: 0.8vw;
+        display: block;
+        width: 0.5vw;
+        height: 0.5vw;
+        background-color: white;
+        border: 1px solid #5E5E5E;
+        border-radius: 50%;
+    }
+    span{
+        margin-left: 0.5vw;
+        line-height: 2vw;
+        font-size: 0.8vw;
+    }
+    .now{
+        background-color: #5E5E5E;
+    }
+}
+
+.rightArea{
+    height: 100vh;
+    width: 84%;
+    border: 1px solid black;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    p{
+        text-align: center;
+        margin-top: 25vw;
+    }
+}
+
+
+// .orderBody{
+//     display: flex;
+//     .orderList{
+//         margin-top: 2vw;
+//         margin-left: 2vw;
+//         width: 20vw;;
+//         .addOrder{
+//             width: 7vw;
+//             height: 3vw;
+//             margin-top: 1vw;
+//             margin-left: 6.4vw;
+//         }
+//         table {
+//             width: 100%;
+//             border: 2px solid rgb(206, 206, 206);
+//             border-collapse: collapse;
+//             .contain{
+//                 cursor: pointer;
+//             }
+//             td {
+//                 padding: 10px;
+//             }
+//             tr:nth-child(odd) {
+//                 background-color: rgb(242, 242, 242);
+//             }
+//         }
+//     }
+//     .defaltText{
+//         margin-top: 2vw;
+//         margin-left: 15vw;
+//     }
+//     .orderDetail{
+//         margin-top: 2vw;
+//         margin-left: 4vw;
+//         h1{
+//                 margin-bottom: 2vw;
+//             }
+//         .oneLine{
+//             margin-bottom: 1vw;
+//             font-size: 1.3vw;
+//             label{
+//                 margin-right: 2vw;
+//             }
+//             input{
+//                 padding-top: 0.2vw;
+//                 padding-bottom: 0.2vw;
+//                 padding-left: 0.5vw;
+//                 width: 20vw;
+//                 font-size: 1.3vw;   
+//                 margin-right: 1vw;
+//             }             
+//         }
+//         .inputDetail{
+//             table {
+//                 margin-top: 2vw;
+//                 width: 100%;
+//                 border: 2px solid rgb(206, 206, 206);
+//                 border-collapse: collapse;
+//                 td {
+//                     padding: 10px;
+//                     text-align: center;
+//                     input{
+//                         font-size: 1.3vw;
+//                         padding: 0.2vw;
+//                         text-align: center;
+//                     }
+//                     select{
+//                         width: 100%;
+//                         font-size: 1.3vw;
+//                         padding: 0.2vw;
+//                         text-align: center;                        
+//                     }
+//                     .fa-xmark{
+//                         font-size: 1.5vw;
+//                         margin-right: 1vw;
+//                         &:hover{
+//                             color: red;
+//                             cursor: pointer;
+//                         }
+//                     }
+//                 }
+//                 tr{
+//                     .deleteCol{
+//                         width: 1vw;
+//                     }
+//                     .name{
+//                         width: 18vw;
+//                     }
+//                     .addBtn{
+//                         cursor: pointer;
+//                         margin-left: 3vw;
+//                         margin-top: 0.1vw;
+//                         width: 95%;
+//                         height: 2vw;                   
+//                     }
+//                 }
+//                 tr:nth-child(1) {
+//                     background-color: rgb(242, 242, 242);
+//                     height: 2vw;
+//                 }
+//                 .inputTitle{
+//                     width: 2vw;
+//                     font-size: 1.3vw;   
+//                     padding-left: 0.5vw;
+//                     padding-right: 0.5vw;
+//                 }
+//             }
+//             // .addBtn{
+//             //         margin-left: 3vw;
+//             //         margin-top: 0.1vw;
+//             //         border: 1px solid black;
+//             //         background-color: rgb(242, 242, 242);
+//             //         width: 95%;
+//             //         height: 2vw;                   
+//             //     }
+//         }
+//         .operateButton{
+//             margin-top: 2vw;
+//             text-align: center;
+//             button{
+//                 width: 7vw;
+//                 height: 4vw;
+//                 font-size: 1.2vw;
+//                 cursor: pointer;
+//             }
+//         }
+//     }
+// }
 </style>

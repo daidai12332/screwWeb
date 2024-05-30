@@ -15,11 +15,6 @@ const router = createRouter({
       component: () => import('../views/MachineStatus.vue')
     },
     {
-      path: '/MachinesManage',
-      name: 'MachinesManage',
-      component: () => import('../views/MachinesManage.vue')
-    },
-    {
       path: '/CarbonEmission',
       name: 'CarbonEmission',
       component: () => import('../views/CarbonEmission.vue')
@@ -31,21 +26,14 @@ const router = createRouter({
     },
     {
       path: '/Member/Machine',
-      name: 'Member',
-      component: () => import('../views/Member.vue'),
-      children:[
-        {
-        path: '/Member/Machine',
-        name: 'MemberMachine',
-        component: ()=> import('../views/MemberMachine.vue')
-      },
-        {
-        path: '/Member/Order',
-        name: 'Order',
-        component: ()=> import('../views/MemberOrder.vue')
-      },
-      ]
-    }
+      name: 'MemberMachine',
+      component: ()=> import('../views/MemberMachine.vue')
+    },
+    {
+      path: '/Member/Order',
+      name: 'Order',
+      component: ()=> import('../views/MemberOrder.vue')
+    },
   ]
 })
 

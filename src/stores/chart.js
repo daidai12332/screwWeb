@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
-const backgroundColorList = ["blue", "green", "red", ];
+const backgroundColorList = ["#EE6E75", "#72C0AC", "#308FD1", "#FFC35D"];
 
 // 儲存製作表單相關的方法
 export const useChartStore = defineStore('chart', () => {
@@ -33,13 +33,24 @@ export const useChartStore = defineStore('chart', () => {
         type: 'bar', 
         data: dataRef, 
         options: { 
+            responsive: false,
+            maintainAspectRatio: false,
             plugins: { 
-                legend: {display: false},
+                legend: {
+                    display: true,
+                    position: 'left',
+                    labels:{
+                        boxHeight: 5,
+                        pointStyleWidth: 7,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                    },
+                },
                 label: { 
-                    display: false, 
+                    display: true, 
                 }, 
             }, 
-            scales: { 
+            scales: {
                 x: { 
                     stacked: true, 
                 }, 
@@ -53,7 +64,7 @@ export const useChartStore = defineStore('chart', () => {
   }
 
   /*
-   * [甜甜圈圖] (存放圖表的元素ID名稱, 每一塊的標籤陣列,  ) : null
+   * [甜甜圈圖] (存放圖表的元素ID名稱, 每一塊的標籤陣列, 資料組成結構 ) : null
    */
   function doughnutChart(elementId, inputLabel, inputDataset){
 
@@ -72,6 +83,8 @@ export const useChartStore = defineStore('chart', () => {
         type: 'doughnut', 
         data: dataRef, 
         options: { 
+            aspectRatio: 1.7,
+            cutout: 30,
             plugins: { 
             legend:{ display: false}
             }, 
@@ -81,9 +94,6 @@ export const useChartStore = defineStore('chart', () => {
 
   }
 
-  function name(params) {
-    
-  }
 
   return { stackChart, doughnutChart }
 })

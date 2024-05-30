@@ -5,7 +5,20 @@ import { useShowStore } from '../stores/show'
 export default {
     data(){
         return {
-            mode:0,
+            htmlNow: "",
+            account: "",
+        }
+    },
+    methods: {
+        logout(){
+            sessionStorage.removeItem('account');
+            location.reload();
+        },
+        changeRouter(page, link){
+            const showService = useShowStore();
+            showService.modeChange(page);
+            this.htmlNow = link;
+            this.$router.push(link);
         }
     },
     components:{
@@ -13,9 +26,9 @@ export default {
         RouterView,
     },
     mounted() {
-        const showService = useShowStore();
-        this.mode = showService.mode;
-        console.log(this.mode);
+        this.htmlNow = this.$router.options.history.location;
+        console.log("htmlNow" + this.htmlNow);
+        this.account = sessionStorage.getItem("account");
     },
 
 }
@@ -29,35 +42,50 @@ export default {
             Logo
         </div>
         
-        <div class="home" :class="{now:this.mode===0}" @click="()=>{this.$router.push('/')}">
+        <div class="home item" :class="{now:this.htmlNow === '/'}" @click="changeRouter(0, '/')">
             <i class="fa-solid fa-house"></i>
         </div>
 
-        <div class="machine" :class="{now:this.mode===1}">
-            <i class="fa-solid fa-database" @click="()=>{this.$router.push('/MachineStatus')}"></i>
+        <div class="machine item" :class="{now:this.htmlNow === '/MachineStatus'}">
+            <i class="fa-solid fa-database" @click="changeRouter(1, '/MachineStatus')"></i>
         </div>
 
-        <div class="order" :class="{now:this.mode===2}">
-            <i class="fa-solid fa-clipboard-list" @click="()=>{this.$router.push('/Login')}"></i>
+        <div class="user item" :class="{now:this.htmlNow === '/Login'}"  v-if="!this.account">
+            <i class="fa-solid fa-user" @click="changeRouter(3, '/Login')"></i>
         </div>
 
-        <div class="user" :class="{now:this.mode===3}">
-            <i class="fa-solid fa-user" @click="()=>{this.$router.push('/Login')}"></i>
+        <div class="memberMachine item" :class="{now:this.htmlNow === '/Member/Machine' || this.htmlNow === '/Login'}" v-if="this.account">
+            <i class="fa-solid fa-database" @click="changeRouter(4, '/Member/Machine')"></i>
+            <i class="fa-solid fa-gear" @click="changeRouter(4, '/Member/Machine')"></i>
         </div>
+
+        <div class="memberOrder item" :class="{now:this.htmlNow === '/Member/Order'}" v-if="this.account">
+            <i class="fa-solid fa-clipboard-list" @click="changeRouter(5, '/Member/Order')"></i>
+            <i class="fa-solid fa-gear" @click="changeRouter(5, '/Member/Order')"></i>
+        </div>
+
+        <div class="logout item" @click="logout">
+            登出
+        </div>
+
     </div>
 </template>
 
 <style lang="scss" scoped>
     .header{
-        width: 100%;
+        width: 90%;
         height: 100vh;
         border-right: 1px solid #D4D4D1;
         padding-top: 2vw;
         display: flex;
         flex-direction: column;
         align-items: center;
-        div{
+        position: relative;
+        .item{
             cursor: pointer;
+        }
+        div{
+            position: relative;
             i {
                 font-size: 1.8vw;
                 margin-bottom: 2vw;
@@ -65,6 +93,13 @@ export default {
                 &:hover{
                     color: #3d3d3d;
                 }
+            }
+            .fa-gear{
+                font-size: 1vw;
+                position: absolute;
+                right: -0.5vw;
+                bottom: -0.5vw;
+                background-color: white;
             }
         }
         .logo{
@@ -89,5 +124,9 @@ export default {
         }
     }
 
-
+    .logout{
+        position: fixed;
+        bottom: -30vw;
+        font-size: 1.2vw;
+    }
 </style>

@@ -10,23 +10,23 @@ export default{
     },
     methods:{
         logoutEvent(){
-            fetch("http://localhost:8080/member/logout",{
-                method: 'GET',
-                headers:{
-                    "Content-Type":"application/json"
-                },
-            })
-            .then(res => res.json())
-            .then((data) => {
-                if(data.code != 200){
-                    console.log(data);
-                    this.alarmEvent(data.message);
-                    return;
-                }
-                this.successEvent("已登出");
-                sessionStorage.removeItem("account");
-                window.location.reload();
-            });
+            // fetch("http://localhost:8080/member/logout",{
+            //     method: 'GET',
+            //     headers:{
+            //         "Content-Type":"application/json"
+            //     },
+            // })
+            // .then(res => res.json())
+            // .then((data) => {
+            //     if(data.code != 200){
+            //         console.log(data);
+            //         this.alarmEvent(data.message);
+            //         return;
+            //     }
+            //     this.successEvent("已登出");
+            //     sessionStorage.removeItem("account");
+            //     window.location.reload();
+            // });
         },
         alarmEvent(str){
             Swal.fire({

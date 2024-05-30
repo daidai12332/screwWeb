@@ -10,35 +10,40 @@ export default{
     },
     methods:{
         loginEvent(){
-            if(!this.account){
-                this.alarmEvent("帳號不得為空");
-                return;
-            }
-            if(!this.pwd){
-                this.alarmEvent("密碼不得為空");
-                return;
-            }
-            let req = {
-                account: this.account,
-                pwd: this.pwd,
-            }
-            fetch("http://localhost:8080/member/login",{
-                method: 'POST',
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body: JSON.stringify(req)
-            })
-            .then(res => res.json())
-            .then((data) => {
-                if(data.code != 200){
-                    console.log(data);
-                    this.alarmEvent(data.message);
-                    return;
-                }
-                sessionStorage.setItem("account", this.account);
-                this.$router.push('/Member/Machine')
-            });
+                sessionStorage.setItem("account", "123");
+                this.$router.push('/Member/Machine');
+                location.reload();
+
+            // if(!this.account){
+            //     this.alarmEvent("帳號不得為空");
+            //     return;
+            // }
+            // if(!this.pwd){
+            //     this.alarmEvent("密碼不得為空");
+            //     return;
+            // }
+            // let req = {
+            //     account: this.account,
+            //     pwd: this.pwd,
+            // }
+            // fetch("http://localhost:8080/member/login",{
+            //     method: 'POST',
+            //     headers:{
+            //         "Content-Type":"application/json"
+            //     },
+            //     body: JSON.stringify(req)
+            // })
+            // .then(res => res.json())
+            // .then((data) => {
+            //     if(data.code != 200){
+            //         console.log(data);
+            //         this.alarmEvent(data.message);
+            //         return;
+            //     }
+            //     sessionStorage.setItem("account", this.account);
+            //     this.$router.push('/Member/Machine')
+            //     location.reload();
+            // });
         },
         alarmEvent(str){
             Swal.fire({
@@ -87,11 +92,16 @@ export default{
             border-radius: 8px;
             width: 30vw;
             height: 2vw;
+            border: 1px solid #5E5E5E;
         }
     }
     button{
         width: 35vw;
         height: 2vw;
+        font-size: 1.2vw;
+        text-align: center;
+        color: white;
+        background-color: var(--blue);
     }
 }
 </style>
