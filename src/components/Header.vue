@@ -64,7 +64,7 @@ export default {
             <i class="fa-solid fa-gear" @click="changeRouter(5, '/Member/Order')"></i>
         </div>
 
-        <div class="logout item" @click="logout">
+        <div class="logout item"  v-if="this.account" @click="logout">
             登出
         </div>
 

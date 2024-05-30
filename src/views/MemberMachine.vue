@@ -145,23 +145,18 @@ export default {
     
             <!-- 最多可以 17 筆 -->
             <div class="content">
-                <!-- <div class="item" :class="item.status" v-for="item in this.machineDataList" @click="this.machineRow(item.name)">
+                <div class="item" :class="item.status" v-for="item in this.machineNameList">
                     <span class="machineNumber">{{ item.name }}</span>
                     <span class="machineType">{{ item.type }}</span>
-                    <span class="status" :class="item.status">{{ item.status }}</span>
-                    <span class="order">{{ item.orderNumber }}</span>
-                    <span class="produce">{{ item.pass }}</span>
-                    <span class="updateTime">{{ item.time.substring(5, 10) + " " + item.time.substring(11) }}</span>
-                </div> -->
+                </div>
             </div>
 
         <div class="button">
-            <button></button>
-            <!-- <button :class="{now: this.machinePageNumber===i-1}" v-for="i in this.machineStatusPage" @click="()=>{this.machinePageNumber = i-1}"></button>
-            <span>( 共 {{ this.machineDataList.length }} 筆 )</span> -->
+            <button class="now" v-for="i in 1"></button>
+            <span>( 共 {{ this.machineNameList.length }} 筆 )</span>
         </div>
         </div>
-        <div class="addMachine">新增</div>
+        <div class="addMachine" @click="this.addMachine()">新增</div>
     </div>
 
     <div class="rightArea">

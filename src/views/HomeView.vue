@@ -76,10 +76,10 @@ export default {
                     console.log(data);
                     return;
                 }
-                this.machineStatus = data.machineData;
+                this.machineStatus = data.machineDataList;
                 console.log("更新機台資料"+this.machineStatus);
                 this.machineStatusPage = 0;
-                this.machinePageNumber = Math.ceil(this.machineStatus.length/17);
+                this.machinePageNumber = Math.ceil(data.machineDataList.length/17);
                 this.changeMachineShow(0);
             });
         },

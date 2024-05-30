@@ -35,7 +35,7 @@ export default {
                     this.list.length = 0;
                     this.machineDataList.length = 0;
                     this.list.push(data)
-                    this.list[0].machineData.forEach((item, index) => {
+                    this.list[0].machineDataList.forEach((item, index) => {
                         this.machineDataList.push(item);
                     });
                     this.machineStatusPage =  Math.ceil(this.machineDataList.length/17);

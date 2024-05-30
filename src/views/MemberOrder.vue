@@ -580,132 +580,132 @@ div{
 }
 
 
-// .orderBody{
-//     display: flex;
-//     .orderList{
-//         margin-top: 2vw;
-//         margin-left: 2vw;
-//         width: 20vw;;
-//         .addOrder{
-//             width: 7vw;
-//             height: 3vw;
-//             margin-top: 1vw;
-//             margin-left: 6.4vw;
-//         }
-//         table {
-//             width: 100%;
-//             border: 2px solid rgb(206, 206, 206);
-//             border-collapse: collapse;
-//             .contain{
-//                 cursor: pointer;
-//             }
-//             td {
-//                 padding: 10px;
-//             }
-//             tr:nth-child(odd) {
-//                 background-color: rgb(242, 242, 242);
-//             }
-//         }
-//     }
-//     .defaltText{
-//         margin-top: 2vw;
-//         margin-left: 15vw;
-//     }
-//     .orderDetail{
-//         margin-top: 2vw;
-//         margin-left: 4vw;
-//         h1{
-//                 margin-bottom: 2vw;
-//             }
-//         .oneLine{
-//             margin-bottom: 1vw;
-//             font-size: 1.3vw;
-//             label{
-//                 margin-right: 2vw;
-//             }
-//             input{
-//                 padding-top: 0.2vw;
-//                 padding-bottom: 0.2vw;
-//                 padding-left: 0.5vw;
-//                 width: 20vw;
-//                 font-size: 1.3vw;   
-//                 margin-right: 1vw;
-//             }             
-//         }
-//         .inputDetail{
-//             table {
-//                 margin-top: 2vw;
-//                 width: 100%;
-//                 border: 2px solid rgb(206, 206, 206);
-//                 border-collapse: collapse;
-//                 td {
-//                     padding: 10px;
-//                     text-align: center;
-//                     input{
-//                         font-size: 1.3vw;
-//                         padding: 0.2vw;
-//                         text-align: center;
-//                     }
-//                     select{
-//                         width: 100%;
-//                         font-size: 1.3vw;
-//                         padding: 0.2vw;
-//                         text-align: center;                        
-//                     }
-//                     .fa-xmark{
-//                         font-size: 1.5vw;
-//                         margin-right: 1vw;
-//                         &:hover{
-//                             color: red;
-//                             cursor: pointer;
-//                         }
-//                     }
-//                 }
-//                 tr{
-//                     .deleteCol{
-//                         width: 1vw;
-//                     }
-//                     .name{
-//                         width: 18vw;
-//                     }
-//                     .addBtn{
-//                         cursor: pointer;
-//                         margin-left: 3vw;
-//                         margin-top: 0.1vw;
-//                         width: 95%;
-//                         height: 2vw;                   
-//                     }
-//                 }
-//                 tr:nth-child(1) {
-//                     background-color: rgb(242, 242, 242);
-//                     height: 2vw;
-//                 }
-//                 .inputTitle{
-//                     width: 2vw;
-//                     font-size: 1.3vw;   
-//                     padding-left: 0.5vw;
-//                     padding-right: 0.5vw;
-//                 }
-//             }
-//             // .addBtn{
-//             //         margin-left: 3vw;
-//             //         margin-top: 0.1vw;
-//             //         border: 1px solid black;
-//             //         background-color: rgb(242, 242, 242);
-//             //         width: 95%;
-//             //         height: 2vw;                   
-//             //     }
-//         }
-//         .operateButton{
-//             margin-top: 2vw;
-//             text-align: center;
-//             button{
-//                 width: 7vw;
-//                 height: 4vw;
-//                 font-size: 1.2vw;
-//                 cursor: pointer;
-//             }
-//         }
-//     }
-// }
+.rightArea{
+    display: flex;
+    .orderList{
+        margin-top: 2vw;
+        margin-left: 2vw;
+        width: 20vw;;
+        .addOrder{
+            width: 7vw;
+            height: 3vw;
+            margin-top: 1vw;
+            margin-left: 6.4vw;
+        }
+        table {
+            width: 100%;
+            border: 2px solid rgb(206, 206, 206);
+            border-collapse: collapse;
+            .contain{
+                cursor: pointer;
+            }
+            td {
+                padding: 10px;
+            }
+            tr:nth-child(odd) {
+                background-color: rgb(242, 242, 242);
+            }
+        }
+    }
+    .defaltText{
+        margin-top: 2vw;
+        margin-left: 15vw;
+    }
+    .orderDetail{
+        margin-top: 2vw;
+        margin-left: 4vw;
+        h1{
+                margin-bottom: 2vw;
+            }
+        .oneLine{
+            margin-bottom: 1vw;
+            font-size: 1.3vw;
+            label{
+                margin-right: 2vw;
+            }
+            input{
+                padding-top: 0.2vw;
+                padding-bottom: 0.2vw;
+                padding-left: 0.5vw;
+                width: 20vw;
+                font-size: 1.3vw;   
+                margin-right: 1vw;
+            }             
+        }
+        .inputDetail{
+            table {
+                margin-top: 2vw;
+                width: 100%;
+                border: 2px solid rgb(206, 206, 206);
+                border-collapse: collapse;
+                td {
+                    padding: 10px;
+                    text-align: center;
+                    input{
+                        font-size: 1.3vw;
+                        padding: 0.2vw;
+                        text-align: center;
+                    }
+                    select{
+                        width: 100%;
+                        font-size: 1.3vw;
+                        padding: 0.2vw;
+                        text-align: center;                        
+                    }
+                    .fa-xmark{
+                        font-size: 1.5vw;
+                        margin-right: 1vw;
+                        &:hover{
+                            color: red;
+                            cursor: pointer;
+                        }
+                    }
+                }
+                tr{
+                    .deleteCol{
+                        width: 1vw;
+                    }
+                    .name{
+                        width: 18vw;
+                    }
+                    .addBtn{
+                        cursor: pointer;
+                        margin-left: 3vw;
+                        margin-top: 0.1vw;
+                        width: 95%;
+                        height: 2vw;                   
+                    }
+                }
+                tr:nth-child(1) {
+                    background-color: rgb(242, 242, 242);
+                    height: 2vw;
+                }
+                .inputTitle{
+                    width: 2vw;
+                    font-size: 1.3vw;   
+                    padding-left: 0.5vw;
+                    padding-right: 0.5vw;
+                }
+            }
+            // .addBtn{
+            //         margin-left: 3vw;
+            //         margin-top: 0.1vw;
+            //         border: 1px solid black;
+            //         background-color: rgb(242, 242, 242);
+            //         width: 95%;
+            //         height: 2vw;                   
+            //     }
+        }
+        .operateButton{
+            margin-top: 2vw;
+            text-align: center;
+            button{
+                width: 7vw;
+                height: 4vw;
+                font-size: 1.2vw;
+                cursor: pointer;
+            }
+        }
+    }
+}
 </style>
