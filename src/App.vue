@@ -1,16 +1,20 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import Header from './components/Header.vue'
 </script>
 
 <template>
+
   <div class="headerAndContent">
+
     <div class="header">
       <Header />
     </div>
+
     <div class="content">  
-        <RouterView />
+      <RouterView />
     </div>
+
   </div>
 
 </template>
@@ -19,10 +23,10 @@ import Header from './components/Header.vue'
 .headerAndContent{
   display: flex;
   .header {
-    width: 5%;
+    width: 5vw;
   }
   .content{
-    width: 100%;
+    width: 95vw;
   }
 }
 

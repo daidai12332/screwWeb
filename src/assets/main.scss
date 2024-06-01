@@ -17,8 +17,18 @@
 
 // variable
 :root{
+    // main color
     --red: #EE6E75;
     --green: #72C0AC;
     --blue: #308FD1;
     --yellow: #FFC35D;
+
+    // header icon note
+    --home: '首頁';
+    --statusMachine: '機台詳細';
+    --statusOrder: '訂單詳細';
+    --login: '登入';
+    --memberMachine: '機台管理';
+    --memberOrder: '訂單管理';
+
 }

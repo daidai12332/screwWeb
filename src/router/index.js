@@ -10,28 +10,28 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/MachineStatus',
-      name: 'MachineStatus',
-      component: () => import('../views/MachineStatus.vue')
+      path: '/status/machine',
+      name: 'StatusMachine',
+      component: () => import('../views/StatusMachine.vue')
     },
     {
-      path: '/CarbonEmission',
-      name: 'CarbonEmission',
-      component: () => import('../views/CarbonEmission.vue')
+      path: '/status/order',
+      name: 'StatusOrder',
+      component: () => import('../views/StatusOrder.vue')
     },
     {
-      path: '/Login',
+      path: '/login',
       name: 'Login',
       component: () => import('../views/Login.vue')
     },
     {
-      path: '/Member/Machine',
+      path: '/member/machine',
       name: 'MemberMachine',
       component: ()=> import('../views/MemberMachine.vue')
     },
     {
-      path: '/Member/Order',
-      name: 'Order',
+      path: '/member/order',
+      name: 'MemberOrder',
       component: ()=> import('../views/MemberOrder.vue')
     },
   ]

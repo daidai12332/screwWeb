@@ -1,70 +1,86 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
-import { useShowStore } from '../stores/show'
 
 export default {
+
+    mounted() {
+        this.changeIconColor();
+        this.checkLogin();
+    },
+
     data(){
         return {
             htmlNow: "",
-            account: "",
+            isLogin: "",
         }
     },
+    
     methods: {
+        // 設定 icon 顏色
+        changeIconColor(){
+            this.htmlNow = this.$router.options.history.location;
+        },
+
+        // 判斷是否登入
+        checkLogin(){
+            this.isLogin = sessionStorage.getItem("account");
+        },
+
+        // 登出
         logout(){
             sessionStorage.removeItem('account');
             location.reload();
         },
-        changeRouter(page, link){
-            const showService = useShowStore();
-            showService.modeChange(page);
+
+        // 跳轉頁面
+        changeRouter(link){
             this.htmlNow = link;
             this.$router.push(link);
         }
     },
+
     components:{
         RouterLink,
         RouterView,
     },
-    mounted() {
-        this.htmlNow = this.$router.options.history.location;
-        console.log("htmlNow" + this.htmlNow);
-        this.account = sessionStorage.getItem("account");
-    },
-
 }
 </script>
-
 
 <template>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <div class = "header">
-        <div class="logo" @click="()=>{this.$router.push('/')}">
+
+        <div class="logo">
             Logo
         </div>
-        
-        <div class="home item" :class="{now:this.htmlNow === '/'}" @click="changeRouter(0, '/')">
-            <i class="fa-solid fa-house"></i>
+
+        <div class="home item" :class="{now:this.htmlNow === '/'}">
+            <i class="fa-solid fa-house" @click="changeRouter('/')"></i>
         </div>
 
-        <div class="machine item" :class="{now:this.htmlNow === '/MachineStatus'}">
-            <i class="fa-solid fa-database" @click="changeRouter(1, '/MachineStatus')"></i>
+        <div class="statusMachine item" :class="{now:this.htmlNow === '/status/machine'}">
+            <i class="fa-solid fa-database" @click="changeRouter('/status/machine')"></i>
         </div>
 
-        <div class="user item" :class="{now:this.htmlNow === '/Login'}"  v-if="!this.account">
-            <i class="fa-solid fa-user" @click="changeRouter(3, '/Login')"></i>
+        <div class="statusOrder item" :class="{now:this.htmlNow === '/status/order'}">
+            <i class="fa-solid fa-clipboard-list" @click="changeRouter('/status/order')"></i>
         </div>
 
-        <div class="memberMachine item" :class="{now:this.htmlNow === '/Member/Machine' || this.htmlNow === '/Login'}" v-if="this.account">
-            <i class="fa-solid fa-database" @click="changeRouter(4, '/Member/Machine')"></i>
-            <i class="fa-solid fa-gear" @click="changeRouter(4, '/Member/Machine')"></i>
+        <div class="login item" :class="{now:this.htmlNow === '/login'}"  v-if="!this.account">
+            <i class="fa-solid fa-user" @click="changeRouter('/login')"></i>
         </div>
 
-        <div class="memberOrder item" :class="{now:this.htmlNow === '/Member/Order'}" v-if="this.account">
-            <i class="fa-solid fa-clipboard-list" @click="changeRouter(5, '/Member/Order')"></i>
-            <i class="fa-solid fa-gear" @click="changeRouter(5, '/Member/Order')"></i>
+        <div class="memberMachine member item" :class="{now:this.htmlNow === '/member/machine' || this.htmlNow === '/login'}" v-if="this.account">
+            <i class="fa-solid fa-database" @click="changeRouter('/member/machine')"></i>
+            <i class="fa-solid fa-gear" @click="changeRouter('/member/machine')"></i>
         </div>
 
-        <div class="logout item"  v-if="this.account" @click="logout">
+        <div class="memberOrder member item" :class="{now:this.htmlNow === '/member/order'}" v-if="this.account">
+            <i class="fa-solid fa-clipboard-list" @click="changeRouter('/member/order')"></i>
+            <i class="fa-solid fa-gear" @click="changeRouter('/member/order')"></i>
+        </div>
+
+        <div class="logout"  v-if="this.account" @click="logout">
             登出
         </div>
 
@@ -72,61 +88,179 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+
+    // 基本樣式
     .header{
-        width: 90%;
+
+        width: 100%;
         height: 100vh;
         border-right: 1px solid #D4D4D1;
-        padding-top: 2vw;
+        padding-top: 0.5vw;
+
         display: flex;
-        flex-direction: column;
         align-items: center;
-        position: relative;
-        .item{
-            cursor: pointer;
+        flex-direction: column;
+
+        .logo{
+
+            width: 3vw;
+            height: 3vw;
+            border-radius: 50%;
+            margin-top: 1.25vw;
+            margin-bottom: 1.25vw;
+            background-color: #5E5E5E;
+
+            font-size: 1vw;
+            color: white;
+
+            text-align: center;
+            line-height: 3vw;
+
         }
-        div{
-            position: relative;
-            i {
+
+        .item{
+
+            margin-top: 1vw;
+            margin-bottom: 1vw;
+
+            cursor: pointer;
+
+            i{
                 font-size: 1.8vw;
-                margin-bottom: 2vw;
                 color: #5E5E5E;
-                &:hover{
+            }
+
+            &:hover{
+                i{
                     color: #3d3d3d;
                 }
             }
+
+        }
+
+        .member{
+            position: relative;
+
             .fa-gear{
+
                 font-size: 1vw;
                 position: absolute;
                 right: -0.5vw;
                 bottom: -0.5vw;
                 background-color: white;
+
+            }
+
+        }
+
+        .logout{
+            position: fixed;
+            bottom: 1.5vw;
+            font-size: 1.2vw;
+        }
+
+    }
+
+    // 添加備註
+    .header{
+
+        .item{
+            position: relative;
+
+            &:hover{
+
+                &::after{
+                height: 70%;
+                padding: 0.2vw;
+                padding-left: 0.4vw;
+                padding-right: 0.4vw;
+                background-color: rgba(45, 45, 45, 0.44);
+
+                position: absolute;
+                top:0vw;
+
+                font-size: 0.8vw;
+                color: white;
+                line-height: calc(70% + 0.8vw);
+                }
+
+            }
+
+        }
+
+        .home{
+            &:hover{
+                &::after{
+                    content: var(--home);
+                    left: 2.5vw;
+                    width: 1.6vw;
+                }
             }
         }
-        .logo{
-            width: 3vw;
-            height: 3vw;
-            background-color: #5E5E5E;
-            color: white;
-            border-radius: 50%;
-            cursor: pointer;
-            text-align: center;
-            line-height: 3vw;
-            margin-bottom: 2.5vw;
-            font-size: 1vw;
+
+        .statusMachine{
+            &:hover{
+                &::after{
+                    content: var(--statusMachine);
+                    left: 2.2vw;
+                    width: 3.2vw;
+                }
+            }
         }
-        .now{
-            i{
-                color: var(--blue);
-                &:hover{
-                    color: var(--blue);
-                }   
+
+        .statusOrder{
+            &:hover{
+                &::after{
+                    content: var(--statusOrder);
+                    left: 2vw;
+                    width: 3.2vw;
+                }
+            }
+        }
+
+        .login{
+            &:hover{
+                &::after{
+                    content: var(--login);
+                    left: 2vw;
+                    width: 1.6vw;
+                }
+            }
+        }
+
+        .memberMachine{
+            &:hover{
+                &::after{
+                    content: var(--memberMachine);
+                }
+            }
+        }
+
+        .memberOrder{
+            &:hover{
+                &::after{
+                    content: var(--memberOrder);
+                }
             }
         }
     }
 
-    .logout{
-        position: fixed;
-        bottom: -30vw;
-        font-size: 1.2vw;
+    // 特殊樣式
+    .header{
+
+        .now{
+
+            i{
+                color: var(--blue);
+            }
+
+            &:hover{
+                i{
+                    color: var(--blue);
+                }
+            }   
+        }
+
     }
+
 </style>

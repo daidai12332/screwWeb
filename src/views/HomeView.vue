@@ -1,6 +1,5 @@
 <script>
 import { useChartStore } from '../stores/chart'
-import { useShowStore } from '../stores/show'
 
 export default {
     data() {
@@ -233,37 +232,34 @@ export default {
         },
     },
     mounted() {
-        // 修改所在介面顏色
-        const showService = useShowStore();
-        showService.modeChange(0);
         // 取得時間
         this.getTime();
         this.timerForLocalDateTime = setInterval(() => {
             setTimeout(this.getTime(), 0)
         }, 1000)
         // 取得機台最新狀況
-        this.newestMachineStatus();
-        this.timerForNewestMachineStatus = setInterval(() => {
-            setTimeout(this.newestMachineStatus(), 0)
-        }, 60000)
+    //    this.newestMachineStatus();
+        // this.timerForNewestMachineStatus = setInterval(() => {
+        //     setTimeout(this.newestMachineStatus(), 0)
+        // }, 60000)
         // 更換機台頁面
-        this.timerForChangeMachinePage = setInterval(() => {
-            setTimeout(this.carouselMachineShow(), 0)
-        }, 10000)
+        // this.timerForChangeMachinePage = setInterval(() => {
+        //     setTimeout(this.carouselMachineShow(), 0)
+        // }, 10000)
         // 取得單號最新狀況
-        this.newestOrderStatus();
-        this.timerForNewestMachineStatus = setInterval(() => {
-            setTimeout(this.newestOrderStatus(), 0)
-        }, 60000)
+        // this.newestOrderStatus();
+        // this.timerForNewestMachineStatus = setInterval(() => {
+        //     setTimeout(this.newestOrderStatus(), 0)
+        // }, 60000)
         // 更換機台頁面
-        this.timerForChangeMachinePage = setInterval(() => {
-            setTimeout(this.carouselOrderShow(), 0)
-        }, 10000)
+        // this.timerForChangeMachinePage = setInterval(() => {
+        //     setTimeout(this.carouselOrderShow(), 0)
+        // }, 10000)
         // 取得最新生產趨勢
-        this.fetchChartData();
-        this.timerForSum = setInterval(() => {
-            setTimeout(this.carouselOrderShow(), 0)
-        }, 60000)
+        // this.fetchChartData();
+        // this.timerForSum = setInterval(() => {
+        //     setTimeout(this.carouselOrderShow(), 0)
+        // }, 60000)
     },
     beforeUnmount() {
         clearInterval(this.timerForLocalDateTime);
@@ -379,7 +375,7 @@ export default {
     </div>
 
     <div class="button">
-        <button :class="{now: orderStatusPage === i-1}" v-for="i in this.orderPageNumber"></button>
+        <button class="error" v-for="i in 1">1</button>
         <span>( 共 {{ this.orderStatus.length }} 筆 )</span>
     </div>
 
