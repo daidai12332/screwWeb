@@ -65,7 +65,7 @@ export default {
             <p class="title">機台最新資訊</p>
             <div class="detail">
                 <span class="machineNumber">機器編號</span>
-                <span class="machineType">機種</span>
+                <span class="type">機種</span>
                 <span class="status" style="font-weight: normal;">狀態</span>
                 <span class="order">單號</span>
                 <span class="produce">產量</span>
@@ -76,7 +76,7 @@ export default {
             <div class="content">
                 <div class="item" :class="{ now: item.name=== this.mName }" v-for="item in this.machineDataList" @click="this.machineRow(item.name)">
                     <span class="machineNumber">{{ item.name }}</span>
-                    <span class="machineType">{{ item.type }}</span>
+                    <span class="type">{{ item.type }}</span>
                     <span class="status" :class="item.status">{{ item.status }}</span>
                     <span class="order">{{ item.orderNumber }}</span>
                     <span class="produce">{{ item.pass }}</span>
@@ -196,7 +196,7 @@ div{
         width: 5vw;
         margin-left: 1.3vw;
     }
-    .machineType{
+    .type{
         width: 5vw;
     }
     .status{
@@ -216,7 +216,7 @@ div{
 
 .machineStatus{
     .item{
-        .machineType{
+        .type{
             font-size: 0.7vw;
         }
         .idle{

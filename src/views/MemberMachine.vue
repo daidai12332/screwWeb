@@ -140,14 +140,14 @@ export default {
             <p class="title">機台管理</p>
             <div class="detail">
                 <span class="machineNumber">機器編號</span>
-                <span class="machineType">機種</span>
+                <span class="type">機種</span>
             </div>
     
             <!-- 最多可以 17 筆 -->
             <div class="content">
                 <div class="item" :class="item.status" v-for="item in this.machineNameList">
                     <span class="machineNumber">{{ item.name }}</span>
-                    <span class="machineType">{{ item.type }}</span>
+                    <span class="type">{{ item.type }}</span>
                 </div>
             </div>
 
@@ -311,7 +311,7 @@ div{
         width: 5vw;
         margin-left: 1.3vw;
     }
-    .machineType{
+    .type{
         width: 5vw;
     }
     .status{

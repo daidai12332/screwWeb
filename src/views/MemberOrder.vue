@@ -327,7 +327,7 @@ export default{
             <p class="title">訂單管理</p>
             <div class="detail">
                 <span class="machineNumber">單號</span>
-                <span class="machineType">名稱</span>
+                <span class="type">名稱</span>
             </div>
     
             <!-- 最多可以 17 筆 -->
@@ -538,7 +538,7 @@ div{
         width: 5vw;
         margin-left: 1.3vw;
     }
-    .machineType{
+    .type{
         width: 5vw;
     }
 }

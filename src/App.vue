@@ -1,6 +1,7 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import Header from './components/Header.vue'
+
 </script>
 
 <template>
@@ -22,6 +23,7 @@ import Header from './components/Header.vue'
 <style scoped lang="scss">
 .headerAndContent{
   display: flex;
+  overflow: hidden;
   .header {
     width: 5vw;
   }
