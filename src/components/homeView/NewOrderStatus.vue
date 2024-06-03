@@ -24,12 +24,12 @@ export default{
             this.updateTime = now.getMonth().toString().padStart(2, '0') + '-' + now.getDate().toString().padStart(2, '0') + ' ' + now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
 
             // 初始化
-            this.dataList = null;
-            this.showList = null;
+            this.dataList = [];
+            this.showList = [];
             this.totalPage = 0;
             this.pageNow = 0;
-            this.finishList = null;
-            this.finishNotify = null;
+            this.finishList = [];
+            this.finishNotify = [];
 
             // 進入資料庫
             fetch("http://localhost:8080/screw/orderDataDay",{
@@ -57,10 +57,6 @@ export default{
                 for(let index in data.orderAndMachineList){
                     this.dataList.push(data.orderAndMachineList[index]);
                     if( this.finishTimeStatus(data.orderAndMachineList[index].finishTime) === 'LessThanTenMin' ){
-                        if(!this.finishList){
-                            this.finishList = [];
-                            this.finishNotify = [];
-                        }
                         this.finishList.push(this.turnIntoPage(index));
                         let announceItem = {
                             orderNumber: data.orderAndMachineList[index].orderNumber,
@@ -250,14 +246,14 @@ export default{
             time: 10000,    // 每頁停留時間(ms)
 
             // 資料管理
-            dataList: null,   // 所有資料清單
+            dataList: [],   // 所有資料清單
 
             // 畫面呈現
             totalPage: 0,     // 總頁數
             pageNow: 0,       // 現在頁面
-            showList: null,     // 現在頁面的資料清單
-            finishList: null,    // error狀態的索引位置
-            finishNotify: null,  // 要子傳父的 error 機台資料
+            showList: [],     // 現在頁面的資料清單
+            finishList: [],    // error狀態的索引位置
+            finishNotify: [],  // 要子傳父的 error 機台資料
             updateTime: null,   // 資料更新時間
 
             // 數值計算
@@ -276,8 +272,9 @@ export default{
         <p class="title">單號最新資訊</p>
 
         <div class="table">
-            <p v-if="!this.dataList" style="font-size: 1vw">暫無資料</p>
-            <table v-if="this.dataList">
+            <p v-if="!this.dataList.length" style="font-size: 1vw">暫無資料</p>
+
+            <table v-if="this.dataList.length">
 
                 <thead>
                     <tr class="detail">
@@ -312,13 +309,13 @@ export default{
             <table>
                 <tr class="countdown">
                     <th scope="row" class="renewTime">更新時間：{{ this.updateTime }}</th>
-                    <th scope="row" class="dataCount" v-if="this.dataList"> ( 共 {{ this.dataList.length }} 筆 ) </th>
-                    <th scope="row" class="dataCount" v-if="!this.dataList"> ( 共 - 筆 ) </th>
+                    <th scope="row" class="dataCount" v-if="this.dataList.length"> ( 共 {{ this.dataList.length }} 筆 ) </th>
+                    <th scope="row" class="dataCount" v-if="!this.dataList.length"> ( 共 - 筆 ) </th>
                 </tr>
             </table>
         </div>
 
-        <div class="button" v-if="this.dataList">
+        <div class="button" v-if="this.dataList.length">
             <button :class="{ 'LessThanTenMin': this.finishList.includes(i) , 'now': this.pageNow === i}" v-for="i in this.totalPage"></button>
         </div>
 

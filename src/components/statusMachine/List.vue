@@ -1,12 +1,10 @@
 <script>
-import Swal from 'sweetalert2'
-
 export default{
 
     // lifecycle
     mounted(){
         // 抓取資料
-        this.getNewestData();
+        this.init();
     },
     beforeUnmount(){
         // 停止計時器
@@ -15,6 +13,15 @@ export default{
 
     //
     methods: {
+        init(){
+            this.pageNow = 1;
+
+            // 定時更新資料
+            this.timerForNewStatus = setInterval(() => {
+                    setTimeout(this.getNewestData(), 0)
+                }, this.time);
+        },
+
         // 抓取資料庫新資料
         getNewestData(){
 
@@ -23,23 +30,19 @@ export default{
 
             // 設定更新時間
             const now = new Date();
-            this.refTime = Date.now();
             this.updateTime = now.getMonth().toString().padStart(2, '0') + '-' + now.getDate().toString().padStart(2, '0') + ' ' + now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
 
-            // 初始化
+            // 清空
             this.dataList = [];
             this.showList = [];
             this.totalPage = 0;
-            this.pageNow = 0;
-            this.errorList = [],
-            this.errorNotify = [];
 
             // 進入資料庫
             fetch("http://localhost:8080/screw/findmachineDataNow",{
-            method: 'POST',
-            headers:{
-                "Content-Type":"application/json"
-            },
+                method: 'POST',
+                headers:{
+                    "Content-Type":"application/json"
+                },
             })
             .then(res => res.json())
             .then((data) => {
@@ -67,27 +70,11 @@ export default{
 
                 // 設定倒數動畫
                 this.setCountdownAnimation();
-                
+    
                 // 設定單頁呈現資料
                 this.getShowData();
 
-                // 傳送公告
-                this.$emit('machineAlarm', this.errorNotify);
-
-                // 若有 error 發送通知
-                if(errorNotify){
-                    this.alarm();
-                }
             });
-        },
-
-        // index 轉換成所在頁數
-        turnIntoPage(index){
-            for(let i = 1; i <= this.totalPage; i++){
-                if( index < this.high * i){
-                    return i;
-                }
-            }
         },
 
         // 設定倒數動畫
@@ -97,24 +84,16 @@ export default{
                 { width: "0%" }
             ];
             const countDownTiming = {
-                duration: this.totalPage * this.time,
+                duration: this.time,
                 iterations: 1,
             }
 
-            const countdownLine = document.getElementById('countdownLineForMachineStatus');
+            const countdownLine = document.getElementById('countdownLineForMachineDetail');
             countdownLine.animate(countDownAnimation, countDownTiming);
         },
 
         // 設定單頁呈現資料
         getShowData(){
-            this.pageNow ++;
-
-            // 若已翻到最後一頁
-            if( this.pageNow > this.totalPage){
-                this.getNewestData();
-                return;
-            }
-
             this.showList = null;
             let startIndex = 0 + ( this.pageNow -1 ) * this.high;
             let largestIndex = high + ( this.pageNow -1 ) * this.high;
@@ -122,81 +101,21 @@ export default{
             for(startIndex; startIndex < endIndex; startIndex++){
                 this.showList.push(this.dataList[startIndex]);
             }
-
-            this.timerForNextPage = setTimeout(this.getShowData(), this.time);
-        },
-
-        // 簡化資料最後接收時間
-        simpleUpdateTime(time){
-            const year = time.toString().substring(0, 4);
-            const mon = time.toString().substring(5, 7);
-            const day = time.toString().substring(8, 10);
-            const hour = time.toString().substring(11, 13);
-            const min = time.toString().substring(14, 16);
-            const sec = time.toString().substring(17, 19);
-            const ms = time.toString().substring(20);
-            const lastReceiveTime = Date.UTC(year, mon, day, hour, min, sec, ms);
-            const difference = this.refTime - lastReceiveTime;
-
-            // 若差超過一天
-            const differDay = Math.floor( difference / 86400000);
-            if( differDay > 1){
-                return mon + '-'+ day + ' ' + hour + ':' + min
-            }
-
-            //
-            const differHour = Math.floor( (difference % 86400000) / 3600000);
-            const differMin = Math.floor( (difference % 3600000) / 60000);
-            const differSec = Math.floor( (difference % 60000) / 1000);
-            let simpleTime = '';
-            switch (true) {
-                case differHour !== 0:
-                    simpleTime += differHour + '時';
-                case differMin !== 0:
-                    simpleTime += differMin + '分';
-                case differSec !== 0:
-                    simpleTime += differSec + '秒前';
-                    break;
-                default:
-                    simpleTime = '小於1秒';
-            }
-            return simpleTime;
-        },
-
-        // 通知錯誤訊息
-        alarm(){
-
-            // 畫面通知
-            let msg = '';
-            for(let index in this.errorNotify){
-                if(!msg){
-                    msg = this.errorNotify[index];
-                }
-                msg += '\n' + this.errorNotify[index];
-            }
-
-            Swal.fire({
-                title: "機台異常",
-                html: msg,
-                timer: 5000,
-                timerProgressBar: true,
-                icon: "error"
-            });
         },
 
         // 停止計時器
         stopTimer(){
-            clearTimeout(this.timerForNextPage);
-            this.timerForNextPage = null;
+            clearTimeout(this.timerForNewStatus);
+            this.timerForNewStatus = null;
         },
-
     },
+
     data(){
         return{
 
             // 常數管理
-            high: 19,       // 單頁最多筆數 
-            time: 10000,    // 每頁停留時間(ms)
+            high: 8,       // 單頁最多筆數 
+            time: 10000,    // 多久更新資料(ms)
 
             // 資料管理
             dataList: [],   // 所有資料清單
@@ -205,15 +124,10 @@ export default{
             totalPage: 0,     // 總頁數
             pageNow: 0,       // 現在頁面
             showList: [],     // 現在頁面的資料清單
-            errorList: [],    // error狀態的索引位置
-            errorNotify: [],  // 要子傳父的 error 機台資料
             updateTime: null,   // 資料更新時間
-
-            // 數值計算
-            refTime: null,
             
             // 計時器
-            timerForNextPage: null,  // 定時換頁
+            timerForNewStatus: null,  // 定時取資料
         }
     }
 }
@@ -221,8 +135,6 @@ export default{
 
 <template>
     <div class="machineStatus">
-
-        <p class="title">機台最新資訊</p>
 
         <div class="table">
             <p v-if="!this.dataList.length" style="font-size: 1vw">暫無資料</p>
@@ -234,25 +146,39 @@ export default{
                         <th scope="col" class="type">種類</th>
                         <th scope="col" class="order">處理單號</th>
                         <th scope="col" class="produce">產量</th>
+                        <th scope="col" class="produce">良率</th>
                         <th scope="col" class="updateTime">最後接收時間</th>
                     </tr>
                 </thead>
     
                 <tbody>
                     <tr class="content" :class="item.status" v-for="item in this.showList">
-                        <td>{{ item.name }}</td>
+                        <!-- <td>{{ item.name }}</td>
                         <td class="status">{{ item.status }}</td>
                         <td class="type">{{ item.type }}</td>
                         <td>{{ item.orderNumber }}</td>
                         <td>{{ item.pass }}</td>
-                        <td>{{ this.simpleUpdateTime(item.time) }}</td>
+                        <td>{{ item.passRatio }}</td>
+                        <td>{{ item.time }}</td> -->
+                        <td>123</td>
+                        <td class="status">idle</td>
+                        <td class="type">一般機</td>
+                        <td>1</td>
+                        <td>500000</td>
+                        <td>5001</td>
+                        <td>2024-05-06 12:30</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
+        <div class="button">
+            <!-- <button :class="{ 'now': this.pageNow === i }" v-for="i in this.totalPage">{{ i }}</button> -->
+        </div>        
+
+
         <div class="note">
-            <div id="countdownLineForMachineStatus"></div>
+            <div id="countdownLineForMachineDetail"></div>
             <table>
                 <tr class="countdown">
                     <th scope="row" class="renewTime">更新時間：{{ this.updateTime }}</th>
@@ -261,12 +187,9 @@ export default{
                 </tr>
             </table>
         </div>
-
-        <div class="button" v-if="this.dataList.length">
-            <button :class="{ 'error': this.errorList.includes(i) , 'now': this.pageNow === i}" v-for="i in this.totalPage"></button>
-        </div>        
     
     </div>
+
 </template>
 
 <style lang="scss" scoped>
@@ -280,22 +203,11 @@ export default{
         flex-direction: column;
         align-items: center;
 
-        .title{
-            width: 100%;
-            height: 1.5vw;
-            background-color: var(--yellow);
-            border-radius: 10px 10px 0px 0px ;
-            margin-bottom: 1vh;
-
-            color: white;
-            text-align: center;
-            line-height: 1.6vw;
-            font-size: 0.95vw;
-        }
-
         .table{
             // border: 1px solid black;
-            height: 79vh;
+            height: 84%;
+            border-bottom: 1px solid #f2f2f2;
+
             table{
                 border-collapse: collapse;
 
@@ -307,22 +219,22 @@ export default{
                             border-bottom: 1vh solid white;
                         }
                         .machineNumber{
-                            width: 6vw;
+                            width: 14vw;
                         }
                         .status{
-                            width: 4vw;
+                            width: 12vw;
                         }
                         .type{
-                            width: 5.8vw;
+                            width: 12vw;
                         }
                         .order{
-                            width: 5vw;
+                            width: 12vw;
                         }
                         .produce{
-                            width: 6vw;
+                            width: 12vw;
                         }
                         .updateTime{
-                            width: 8vw;
+                            width: 18.8vw;
                         }
                     }
                 }
@@ -355,8 +267,31 @@ export default{
             }
         }
         
+        .button{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 10%;
+            // border:1px solid #5E5E5E;
+            button{
+                margin-left: 0.3vw;
+                margin-right: 0.3vw;
+                display: block;
+                width: 1vw;
+                height: 1vw;
+                background-color: white;
+                cursor: pointer;
+                // border: 1px solid #5E5E5E;
+                border-radius: 50%;
+
+                font-size: 0.8vw;
+            }
+
+        }
+
         .note{
-            #countdownLineForMachineStatus{
+            #countdownLineForMachineDetail{
                 width: 100%;
                 height: 0.5vh;
                 background-color: var(--yellow);
@@ -369,7 +304,7 @@ export default{
                     border: 0;
                     th{
                         background-color: var(--yellow);
-                        width: 17.48vw;
+                        width: 46.5vw;
 
                         font-weight: 600;
                         font-size: 0.95vw;
@@ -389,39 +324,14 @@ export default{
             }
         }
 
-        .button{
-            display: flex;
-            justify-content: center;
-            button{
-                margin-left: 0.2vw;
-                margin-right: 0.2vw;
-                margin-top: 0.8vw;
-                display: block;
-                width: 0.5vw;
-                height: 0.5vw;
-                background-color: white;
-                border: 1px solid #5E5E5E;
-                border-radius: 50%;
-            }
-
-        }
-    }
-
-    // 特殊樣式：按鈕-錯誤頁面
-    .machineStatus{
-        .button{
-            .error{
-                border-color: var(--red);
-                animation: errorAlarm 1.5s ease 0s infinite alternate;
-            }
-        }
     }
 
     // 特殊樣式：按鈕-現在頁面
     .machineStatus{
         .button{
             .now{
-                background-color: #5E5E5E;
+                background-color: var(--yellow);
+                color: white;
             }
         }
     }
@@ -438,28 +348,10 @@ export default{
         }
     }
     .error{
-        td{
-            animation: errorAlarm 1.5s ease 0s infinite alternate;  
-            background-color: var(--redLight);
-        }
         .status{
             background-color: var(--redLight);
         }
     }
 
-    @keyframes errorAlarm{
-        0% { 
-            background-color: white;
-        }
-        50%{ 
-            background-color: var(--redLight); 
-        }
-        70%{ 
-            background-color: white;
-        }
-        100%{ 
-            background-color: var(--redLight); 
-        }
-    }
 
 </style>

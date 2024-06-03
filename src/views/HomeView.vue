@@ -1,5 +1,4 @@
 <script>
-import { useChartStore } from '../stores/chart'
 import NewMachineStatus from '../components/homeView/NewMachineStatus.vue'
 import DayAccumulation from '../components/homeView/DayAccumulation.vue'
 import NewOrderStatus from '../components/homeView/NewOrderStatus.vue'

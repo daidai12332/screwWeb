@@ -1,294 +1,139 @@
 
 <script>
-import MachineStatistics from '../components/MachineStatistics.vue'
-import { useShowStore } from '../stores/show'
+import List from '../components/statusMachine/List.vue'
+import ListShow from '../components/statusMachine/ListShow.vue'
 
 export default {
+    // mounted() {
+    //     console.log("MachineStatus");
+    //     // 修改所在介面顏色
+    //     const showService = useShowStore();
+    //     showService.modeChange(1);
+    //     console.log(showService.mode);
+    //     // 獲得機台資料
+    //     this.getDataNow();
+    // },
+
+    methods: {
+        changeMode(){
+            this.isList = !this.isList;
+        },
+    },
+
     data() {
         return {
-            list:[],
-            machineDataList:[],
-            names: ["test1", "test2"],
-            mName: "",
-            machineStatusPage:0,
-            machinePageNumber:0,
+            isList: true,
+            dataShow: null,
+            // list:[],
+            // machineDataList:[],
+            // names: ["test1", "test2"],
+            // mName: "",
+            // machineStatusPage:0,
+            // machinePageNumber:0,
 
         }
     },
     components: {
-        MachineStatistics
-    },
-    methods: {
-        getDataNow() {
-            let obj = {
-
-            }
-            fetch("http://localhost:8080/screw/findmachineDataNow", {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(obj)
-            })
-                .then(res => res.json())
-                .then((data) => {
-                    this.list.length = 0;
-                    this.machineDataList.length = 0;
-                    this.list.push(data)
-                    this.list[0].machineDataList.forEach((item, index) => {
-                        this.machineDataList.push(item);
-                    });
-                    this.machineStatusPage =  Math.ceil(this.machineDataList.length/17);
-                })
-        },
-        machineRow(n) {
-            this.mName = n
-        },
-        
-    },
-    mounted() {
-        console.log("MachineStatus");
-        // 修改所在介面顏色
-        const showService = useShowStore();
-        showService.modeChange(1);
-        console.log(showService.mode);
-        // 獲得機台資料
-        this.getDataNow();
+        List,
+        ListShow
     },
 }
 </script>
 
 <template>
-<body>
-    <div class="leftArea">
-        <div class="machineStatus">
-            <p class="title">機台最新資訊</p>
-            <div class="detail">
-                <span class="machineNumber">機器編號</span>
-                <span class="type">機種</span>
-                <span class="status" style="font-weight: normal;">狀態</span>
-                <span class="order">單號</span>
-                <span class="produce">產量</span>
-                <span class="updateTime">更新時間</span>
-            </div>
-    
-            <!-- 最多可以 17 筆 -->
-            <div class="content">
-                <div class="item" :class="{ now: item.name=== this.mName }" v-for="item in this.machineDataList" @click="this.machineRow(item.name)">
-                    <span class="machineNumber">{{ item.name }}</span>
-                    <span class="type">{{ item.type }}</span>
-                    <span class="status" :class="item.status">{{ item.status }}</span>
-                    <span class="order">{{ item.orderNumber }}</span>
-                    <span class="produce">{{ item.pass }}</span>
-                    <span class="updateTime">{{ item.time.substring(5, 10) + " " + item.time.substring(11) }}</span>
-                </div>
-            </div>
+    <div class="content">
 
-        <div class="button">
-            <button :class="{now: this.machinePageNumber===i-1}" v-for="i in this.machineStatusPage" @click="()=>{this.machinePageNumber = i-1}"></button>
-            <span>( 共 {{ this.machineDataList.length }} 筆 )</span>
+        <div class="titleArea">
+            <p class="title">單號最新資訊</p>
+            <!-- <button class="listBtn" :class="{ now : this.isList}" @click="changeMode">清單</button>
+            <button class="displayBtn" :class="{ now : !this.isList}" @click="changeMode">布局</button> -->
         </div>
+
+        <div class="listArea">
+            <List />
+        </div>
+
+        <div class="showArea">
+            <ListShow />
         </div>
     </div>
-
-    <div class="rightArea">
-        <p v-if="!this.mName">點選左側列表查看詳情</p>
-        <MachineStatistics v-bind:mName="this.mName" v-if="this.mName" />
-    </div>
-</body>
 </template>
 
 <style lang="scss" scoped>
+    // 基本樣式
+    .content{
+        width: 100%;
+        height: 100%;
+        
+        .titleArea{
+            width: 98%;
+            height: 1.5vw;
+            margin-top: 1%;
+            margin-left: 1%;
+            
+            position: relative;
 
-body{
-    display: flex;
-    width: 100%;
-    .leftArea {
-        width: 32%;
-        margin-top: 2vw;
-        margin-left: 2vw;
-        margin-right: 2vw;
-        .machineStatus {
-            width: 100%;
-            height: 100%;
             .title{
+                width: 100%;
+                height: 100%;
                 background-color: var(--yellow);
+                border-radius: 10px 10px 0px 0px;
+    
+                color: white;
+                text-align: center;
+                line-height: 1.6vw;
+                font-size: 0.95vw;
             }
-            .content{
-                height: 84vh;
-            }
-        }
-    }
-}
 
-.title{
-    height: 1.5vw;
-    color: white;
-    text-align: center;
-    line-height: 1.6vw;
-    font-size: 0.95vw;
-    border-radius: 5px;
-    margin-bottom: 0.5vw;
-}
+            button{
+                cursor: pointer;
+                width: 4%;
+                height: 100%;
+                border: 2px solid var(--yellow);
+                border-bottom: 2px solid var(--yellow);
+                border-radius: 15px 5px 0px 0px;
+                background-color: white;
 
-.detail{
-    span{
-        display: inline-block;
-        font-size: 0.9vw;
-        text-align: center;
-        padding-left: auto;
-    }
-}
+                font-size: 1vw;
+                color: #5E5E5E;
+                line-height: 150%;
 
-.content {
-    padding-top: 1.2vw;
-    height: 10vh;
-    border: 1px solid #5E5E5E;
-    border-radius: 10px;
-    .now{
-        background-color: #eae8e8;
-    }
-    .item{
-        position: relative;
-        display: flex;
-        align-items: center;
-        margin-bottom: 0.3vw;
-        &:hover{
-            cursor: pointer;
-            &::after{
-                content: "";
-                width: 96%;
-                height: 96%;
                 position: absolute;
+                top: 0%;
                 left: 2%;
-                top: 2%;
-                border-radius: 15px;
-                background-color: #eae8e8;
-                z-index: -1;
+            }
+            .displayBtn{
+                left: 6%;
             }
         }
-        span{
-            display: inline-block;
-            font-size: 1.1vw;
-            text-align: center;
-            height: 2vw;
-            line-height: 2vw;
+
+        .listArea{
+            // border: 1px solid black;
+            width: 98%;
+            height: 42%;
+            margin-top: 0.5%;
+            margin-left: 1%;
+
+        }
+
+        .showArea{
+            // border: 1px solid black;
+            width: 98%;
+            height: 48%;
+            margin-top: 1%;
+            margin-left: 1%;
         }
     }
-}
 
-.itemNow{
-    &::after{
-                content: "";
-                width: 96%;
-                height: 96%;
-                position: absolute;
-                left: 2%;
-                top: 2%;
-                border-radius: 15px;
-                background-color: #eae8e8;
-                z-index: -1;
+    // 特殊樣式：正在瀏覽的分頁
+    .content{
+        .titleArea{
+            .now{
+                border-bottom: 2px solid white;
             }
-}
-
-div{
-    .machineNumber{
-        width: 5vw;
-        margin-left: 1.3vw;
-    }
-    .type{
-        width: 5vw;
-    }
-    .status{
-        width: 3.5vw;
-        font-weight: 800;
-    }
-    .order{
-        width: 3vw;
-    }
-    .produce{
-        width: 3vw;
-    }
-    .updateTime{
-        width: 7.7vw;
-    }
-}
-
-.machineStatus{
-    .item{
-        .type{
-            font-size: 0.7vw;
-        }
-        .idle{
-            color: var(--blue);
-        }
-        .run{
-            color: var(--green);
-        }
-        .error{
-            color: var(--red);
         }
     }
-}
 
-.button{
-    display: flex;
-    justify-content: center;
-    button{
-        margin-left: 0.2vw;
-        margin-right: 0.2vw;
-        margin-top: 0.8vw;
-        display: block;
-        width: 0.5vw;
-        height: 0.5vw;
-        background-color: white;
-        border: 1px solid #5E5E5E;
-        border-radius: 50%;
-        cursor: pointer;
-    }
-    span{
-        margin-left: 0.5vw;
-        line-height: 2vw;
-        font-size: 0.8vw;
-    }
-    .error{
-        border-color: var(--red);
-        -webkit-animation-name: errorAlarm;
-        -webkit-animation-duration: 1.5s;
-        -webkit-animation-iteration-count: infinite;
-        -webkit-animation-direction: alternate;
-        -webkit-animation-timing-function: ease;
-        -webkit-animation-play-state: running;
-    }
-    .now{
-        background-color: #5E5E5E;
-    }
-}
-
-@-webkit-keyframes errorAlarm{
-    0% { 
-        background-color: white;
-    }
-    50%{ 
-        background-color: var(--red); 
-    }
-    70%{ 
-        background-color: white;
-    }
-    100%{ 
-        background-color: var(--red); 
-    }
-}
-
-.rightArea{
-    height: 100vh;
-    width: 60%;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    p{
-        text-align: center;
-        margin-top: 25vw;
-    }
-}
+    // 框架
 
 </style>

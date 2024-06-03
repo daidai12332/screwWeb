@@ -1,4 +1,6 @@
 <script>
+import { useChartStore } from '../../stores/chart.js';
+
 export default{
 
     mounted() {
