@@ -31,7 +31,6 @@ export default {
     <div class="tabBlock">
         <button :class="{ now: this.tab === 0 }" @click="changeTab(0)">訂單資料</button>
         <button :class="{ now: this.tab === 1 }" @click="changeTab(1)">製造資訊</button>
-        <button :class="{ now: this.tab === 2 }" @click="changeTab(2)">績效分析</button>
     </div>
 
     <div class="orderInfoBlock tabShowBlock" v-show="this.tab === 0">
@@ -182,127 +181,6 @@ export default {
 
     </div>
 
-    <div class="statisticsBlock tabShowBlock" v-show="this.tab === 2">
-
-
-        <div class="traceTable statisticsTable">
-
-            <p class="title">進度追蹤</p>
-            <div class="table">
-                <p>目標生產量：</p>
-                <table>
-                    <tr>
-                        <td scope="col" class="manufactureName title">流程</td>
-                        <td scope="col" class="machineName title">生產機台</td>
-                        <td scope="col" class="produce title">累積生產量 (顆)</td>
-                        <td scope="col" class="passRatio title">良率 (%)</td>
-                        <td scope="col" class="finishRatio title">完成率 (%)</td>
-                        <td scope="col" class="estimateFinishTime title">累積花費時間</td>
-                        <td scope="col" class="finishTime title">預估完成時間</td>
-                    </tr>
-
-                    <tr class="item">
-                        <td>鍛造</td>
-                        <td>test1</td>
-                        <td>500</td>
-                        <td>50%</td>
-                        <td>5%</td>
-                        <td>3hr</td>
-                        <td>2024-05-21 05:00</td>
-                    </tr>
-                    <tr class="item">
-                        <td>鍛造</td>
-                        <td>test1</td>
-                        <td>500</td>
-                        <td>50%</td>
-                        <td>5%</td>
-                        <td>3hr</td>
-                        <td>2024-05-21 05:00</td>
-                    </tr>
-                </table>
-            </div>
-
-        </div>
-
-        <div class="carbonEmissionTable statisticsTable">
-            <p class="title bottom">碳排放計算</p>
-
-            <div class="table">
-
-                <table>
-                    <tr>
-                        <td rowspan="4" scope="col" class="manufactureName title">輾牙</td>
-                        <td scope="col" class="name title">原料</td>
-                        <td scope="col" class="amount title">使用量</td>
-                        <td scope="col" class="carbonEmission title">碳排放係數</td>
-                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
-                    </tr>
-
-                    <tr class="item">
-                        <td>碳鋼</td>
-                        <td>1.26 <span> ( 公噸 ) </span></td>
-                        <td>2.575</td>
-                    </tr>
-
-                    <tr>
-                        <td class="name title">消耗/排放物</td>
-                        <td scope="col" class="amount title">使用量</td>
-                        <td class="carbonEmission title">碳排放係數</td>
-                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
-                    </tr>
-
-                    <tr class="item">
-                        <td>碳鋼</td>
-                        <td>1.26 <span> ( 公噸 ) </span></td>
-                        <td>2.575</td>
-                        <td>5</td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="4" class="name title">產物碳排放量</td>
-                        <td>15</td>
-                    </tr>
-                </table>
-
-                <table>
-                    <tr>
-                        <td rowspan="4" scope="col" class="manufactureName title">熱處理</td>
-                        <td scope="col" class="name title">原料</td>
-                        <td scope="col" class="amount title">使用量</td>
-                        <td scope="col" class="carbonEmission title">碳排放係數</td>
-                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
-                    </tr>
-
-                    <tr class="item">
-                        <td>碳鋼</td>
-                        <td>1.26 <span> ( 公噸 ) </span></td>
-                        <td>2.575</td>
-                    </tr>
-
-                    <tr>
-                        <td class="name title">消耗/排放物</td>
-                        <td scope="col" class="amount title">使用量</td>
-                        <td class="carbonEmission title">碳排放係數</td>
-                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
-                    </tr>
-
-                    <tr class="item">
-                        <td>碳鋼</td>
-                        <td>1.26 <span> ( 公噸 ) </span></td>
-                        <td>2.575</td>
-                    </tr>
-                </table>
-            </div>
-
-        </div>
-
-
-        <div class="linkArea">
-            <button>統計圖呈現</button>
-        </div>
-
-
-    </div>
 </template>
 
 <style lang="scss" scoped>
@@ -318,21 +196,21 @@ export default {
         height: 100%;
         font-size: 1vw;
         border-radius: 13px 13px 0px 0px;
-        background-color: var(--greenLight);
+        background-color: var(--blueLight);
     }
 }
 
 .tabShowBlock {
     width: 100%;
     height: 92%;
-    border: 0.15vw solid var(--green);
+    border: 0.15vw solid var(--blue);
     padding-left: 1vw;
     // border: 1px solid red;
     display: flex;
 
     .infoBlock {
         width: 24vw;
-        border-right: 1px solid var(--green);
+        border-right: 1px solid var(--blue);
         padding-left: 2.5vw;
         padding-right: 2.5vw;
         padding-top: 1vw;
@@ -836,15 +714,15 @@ export default {
         display: block;
         width: 7.5vw;
         height: 6vh;
-        background-color: var(--greenLight);
-        border: 1px solid var(--green);
+        background-color: var(--blueLight);
+        border: 1px solid var(--blue);
         border-radius: 10px;
 
         font-size: 1.2vw;
 
         &:hover {
             cursor: pointer;
-            background-color: var(--green);
+            background-color: var(--blue);
         }
     }
 }
@@ -852,12 +730,12 @@ export default {
 // 特殊樣式：按鈕-現在頁面
 .tabBlock {
     .now {
-        background-color: var(--green);
+        background-color: var(--blue);
     }
 }
 
 // 特殊樣式：該單號的流程
 .need {
-    background-color: var(--greenLight);
+    background-color: var(--blueLight);
 }
 </style>

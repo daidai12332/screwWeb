@@ -28,6 +28,24 @@ export default {
 
         // 登出
         logout(){
+            // fetch("http://localhost:8080/member/logout",{
+            //     method: 'GET',
+            //     headers:{
+            //         "Content-Type":"application/json"
+            //     },
+            // })
+            // .then(res => res.json())
+            // .then((data) => {
+            //     if(data.code != 200){
+            //         console.log(data);
+            //         this.alarmEvent(data.message);
+            //         return;
+            //     }
+            //     this.successEvent("已登出");
+            //     sessionStorage.removeItem("account");
+            //     window.location.reload();
+            // });
+
             sessionStorage.removeItem('account');
             location.reload();
         },
@@ -66,21 +84,21 @@ export default {
             <i class="fa-solid fa-clipboard-list" @click="changeRouter('/status/order')"></i>
         </div>
 
-        <div class="login item" :class="{now:this.htmlNow === '/login'}"  v-if="!this.account">
+        <div class="login item" :class="{now:this.htmlNow === '/login'}"  v-show="!this.isLogin">
             <i class="fa-solid fa-user" @click="changeRouter('/login')"></i>
         </div>
 
-        <div class="memberMachine member item" :class="{now:this.htmlNow === '/member/machine' || this.htmlNow === '/login'}" v-if="this.account">
+        <div class="memberMachine member item" :class="{now:this.htmlNow === '/member/machine' || this.htmlNow === '/login'}" v-show="this.isLogin">
             <i class="fa-solid fa-database" @click="changeRouter('/member/machine')"></i>
             <i class="fa-solid fa-gear" @click="changeRouter('/member/machine')"></i>
         </div>
 
-        <div class="memberOrder member item" :class="{now:this.htmlNow === '/member/order'}" v-if="this.account">
+        <div class="memberOrder member item" :class="{now:this.htmlNow === '/member/order'}" v-show="this.isLogin">
             <i class="fa-solid fa-clipboard-list" @click="changeRouter('/member/order')"></i>
             <i class="fa-solid fa-gear" @click="changeRouter('/member/order')"></i>
         </div>
 
-        <div class="logout"  v-if="this.account" @click="logout">
+        <div class="logout"  v-show="this.isLogin" @click="logout">
             登出
         </div>
 
@@ -157,6 +175,7 @@ export default {
             position: fixed;
             bottom: 1.5vw;
             font-size: 1.2vw;
+            cursor: pointer;
         }
 
     }
@@ -232,6 +251,8 @@ export default {
             &:hover{
                 &::after{
                     content: var(--memberMachine);
+                    left: 2.5vw;
+                    width: 3.2vw;
                 }
             }
         }
@@ -240,6 +261,9 @@ export default {
             &:hover{
                 &::after{
                     content: var(--memberOrder);
+                    left: 2.5vw;
+                    width: 3.2vw;
+
                 }
             }
         }
