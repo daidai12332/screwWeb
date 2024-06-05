@@ -1,5 +1,4 @@
 <script>
-// import { useChartStore } from '../../stores/chart.js'
 
 export default{
     methods: {

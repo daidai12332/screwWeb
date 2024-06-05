@@ -41,10 +41,10 @@ export default {
 </script>
 
 <template>
-    <div class="content">
+    <div class="statusMachine">
 
         <div class="titleArea">
-            <p class="title">單號最新資訊</p>
+            <p class="title">機台詳細資訊</p>
             <!-- <button class="listBtn" :class="{ now : this.isList}" @click="changeMode">清單</button>
             <button class="displayBtn" :class="{ now : !this.isList}" @click="changeMode">布局</button> -->
         </div>
@@ -61,7 +61,7 @@ export default {
 
 <style lang="scss" scoped>
     // 基本樣式
-    .content{
+    .statusMachine{
         width: 100%;
         height: 100%;
         
@@ -106,7 +106,20 @@ export default {
                 left: 6%;
             }
         }
+    }
 
+    // 特殊樣式：正在瀏覽的分頁
+    .statusMachine{
+        .titleArea{
+            .now{
+                border-bottom: 2px solid white;
+            }
+        }
+    }
+
+    // 框架
+    .statusMachine{
+        
         .listArea{
             // border: 1px solid black;
             width: 98%;
@@ -123,17 +136,6 @@ export default {
             margin-top: 1%;
             margin-left: 1%;
         }
+
     }
-
-    // 特殊樣式：正在瀏覽的分頁
-    .content{
-        .titleArea{
-            .now{
-                border-bottom: 2px solid white;
-            }
-        }
-    }
-
-    // 框架
-
 </style>
