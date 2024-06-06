@@ -17,6 +17,7 @@ export default{
             this.pageNow = 1;
 
             // 定時更新資料
+            this.getNewestData();
             this.timerForNewStatus = setInterval(() => {
                     setTimeout(this.getNewestData(), 0)
                 }, this.time);
@@ -24,9 +25,6 @@ export default{
 
         // 抓取資料庫新資料
         getNewestData(){
-
-            console.log("stop get data for displaying");
-            return;
 
             // 設定更新時間
             const now = new Date();
@@ -39,7 +37,7 @@ export default{
 
             // 進入資料庫
             fetch("http://localhost:8080/screw/findmachineDataNow",{
-                method: 'POST',
+                method: 'GET',
                 headers:{
                     "Content-Type":"application/json"
                 },
@@ -74,6 +72,10 @@ export default{
                 // 設定單頁呈現資料
                 this.getShowData();
 
+                this.timerForNextPage = setInterval(() => {
+                        setTimeout(this.getShowData(), 0)
+                    }, this.time*this.totalPage);
+
             });
         },
 
@@ -94,9 +96,9 @@ export default{
 
         // 設定單頁呈現資料
         getShowData(){
-            this.showList = null;
+            this.showList = [];
             let startIndex = 0 + ( this.pageNow -1 ) * this.high;
-            let largestIndex = high + ( this.pageNow -1 ) * this.high;
+            let largestIndex = this.high + ( this.pageNow -1 ) * this.high;
             let endIndex = largestIndex > this.dataList.length? this.dataList.length : largestIndex;
             for(startIndex; startIndex < endIndex; startIndex++){
                 this.showList.push(this.dataList[startIndex]);
@@ -108,6 +110,22 @@ export default{
             clearTimeout(this.timerForNewStatus);
             this.timerForNewStatus = null;
         },
+
+        // 檢視機台詳細資料
+        checkMachineDetail(item){
+            this.machineDetail = item;
+            this.$emit('sendMachineDetail', this.machineDetail)
+        },
+
+        // 換頁
+        changePage(page){
+            if (page === this.pageNow){
+                return;
+            }
+            this.pageNow = page;
+            this.getShowData();
+        }
+        
     },
 
     data(){
@@ -125,7 +143,8 @@ export default{
             pageNow: 0,       // 現在頁面
             showList: [],     // 現在頁面的資料清單
             updateTime: null,   // 資料更新時間
-            
+            machineDetail:{},   // 現在查看的資料詳細
+
             // 計時器
             timerForNewStatus: null,  // 定時取資料
         }
@@ -152,28 +171,21 @@ export default{
                 </thead>
     
                 <tbody>
-                    <tr class="content" :class="item.status" v-for="item in this.showList">
-                        <!-- <td>{{ item.name }}</td>
+                    <tr class="content" :class="item.status" v-for="item in this.showList" @click="checkMachineDetail(item)">
+                        <td>{{ item.name }}</td>
                         <td class="status">{{ item.status }}</td>
                         <td class="type">{{ item.type }}</td>
                         <td>{{ item.orderNumber }}</td>
                         <td>{{ item.pass }}</td>
-                        <td>{{ item.passRatio }}</td>
-                        <td>{{ item.time }}</td> -->
-                        <td>123</td>
-                        <td class="status">idle</td>
-                        <td class="type">一般機</td>
-                        <td>1</td>
-                        <td>500000</td>
-                        <td>5001</td>
-                        <td>2024-05-06 12:30</td>
+                        <td>{{ Math.round(item.pass / (item.pass+item.ng)*1000)/1000*100 }}%</td>
+                        <td>{{ item.time.toString().substring(5, 10) + " " + item.time.toString().substring(11) }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
         <div class="button">
-            <!-- <button :class="{ 'now': this.pageNow === i }" v-for="i in this.totalPage">{{ i }}</button> -->
+            <button :class="{ 'now': this.pageNow === i }" v-for="i in this.totalPage" @click="changePage(i)">{{ i }}</button>
         </div>        
 
 

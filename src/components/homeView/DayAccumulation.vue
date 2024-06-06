@@ -14,7 +14,7 @@ export default{
         this.fetchChartData();
         this.timerForSum = setInterval(() => {
                 setTimeout(this.fetchChartData(), 0)
-            }, 60000);
+            }, 86400000);
     },
 
     methods: {
@@ -54,28 +54,29 @@ export default{
         // 抓取圖表資料
         fetchChartData(){
 
-            console.log("stop for display");
-            return;
-
             let label = [];
             let data0 = [];
             let data1 = [];
             let data2 = [];
-            let doughnutLabel = ["一般型", "鍵財型", "成型機"];
-            let totalPower = [0, 0, 0];
-            let totalProduce = [0, 0, 0];
+            let data3 = [];
+            let data4 = [];
+            let doughnutLabel = ["伸線機", "成型機", "打頭機", "淬火爐", "電鍍機"];
+            let totalPower = [0, 0, 0, 0, 0];
+            let totalProduce = [0, 0, 0, 0, 0];
             for(let index = 0; index < 24; index++){
                 label[index] = index;
                 data0[index] = 0;
                 data1[index] = 0;
                 data2[index] = 0;
+                data3[index] = 0;
+                data4[index] = 0;
             }
 
             const now = new Date();
             this.updateTime = now.getMonth().toString().padStart(2, '0') + '-' + now.getDate().toString().padStart(2, '0') + ' ' + now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
 
             fetch("http://localhost:8080/screw/machineHoursData",{
-            method: 'POST',
+            method: 'GET',
             headers:{
                 "Content-Type":"application/json"
             },
@@ -86,28 +87,39 @@ export default{
                     console.log(data);
                     return;
                 }                
+                console.log(data);
                 for(let index in data.equipmentHoursDayList){
                     switch (data.equipmentHoursDayList[index].type) {
-                        case '0':
+                        case doughnutLabel[0]:
                             data0[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;
                             totalPower[0] += data.equipmentHoursDayList[index].power;
                             totalProduce[0] += data.equipmentHoursDayList[index].pass;
                             break;
-                        case '1':
+                        case doughnutLabel[1]:
                             data1[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;                        
                             totalPower[1] += data.equipmentHoursDayList[index].power;
                             totalProduce[1] += data.equipmentHoursDayList[index].pass;
                             console.log(totalProduce[1]);
                             break;
-                        case '2':
+                        case doughnutLabel[2]:
                             data2[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;                                                    
                             totalPower[2] += data.equipmentHoursDayList[index].power;
                             totalProduce[2] += data.equipmentHoursDayList[index].pass;
                             break;                    
+                        case doughnutLabel[3]:
+                            data3[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;                                                    
+                            totalPower[3] += data.equipmentHoursDayList[index].power;
+                            totalProduce[3] += data.equipmentHoursDayList[index].pass;
+                            break;                    
+                        case doughnutLabel[4]:
+                            data4[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;                                                    
+                            totalPower[4] += data.equipmentHoursDayList[index].power;
+                            totalProduce[4] += data.equipmentHoursDayList[index].pass;
+                            break;                    
                     }                    
                 }
                 fetch("http://localhost:8080/screw/machineNewHourData",{
-            method: 'POST',
+            method: 'GET',
             headers:{
                 "Content-Type":"application/json"
             },
@@ -119,32 +131,42 @@ export default{
                 } else {
                     console.log(data.equipmentHourList);
                     for(let index in data.equipmentHourList){
-                        switch (data.equipmentHourList[index].type) {
-                            case 0:
-                                data0[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;
-                                totalPower[0] += data.equipmentHoursDayList[index].power;
-                                totalProduce[0] += data.equipmentHoursDayList[index].pass;
-                                break;
-                            case 1:
-                                data1[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;      
-                                totalPower[1] += data.equipmentHoursDayList[index].power;
-                                totalProduce[1] += data.equipmentHoursDayList[index].pass;
-                                break;
-                            case 2:
-                                data2[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;   
-                                totalPower[2] += data.equipmentHoursDayList[index].power;
-                                totalProduce[2] += data.equipmentHoursDayList[index].pass;
-                                break;
-                        }                    
+                        console.log(data.equipmentHourList[index].pass);
+                        // switch (data.equipmentHourList[index].type) {
+                        //     case doughnutLabel[0]:
+                        //         data0[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;
+                        //         totalPower[0] += data.equipmentHoursDayList[index].power;
+                        //         totalProduce[0] += data.equipmentHoursDayList[index].pass;
+                        //         break;
+                        //     case doughnutLabel[1]:
+                        //         data1[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;      
+                        //         totalPower[1] += data.equipmentHoursDayList[index].power;
+                        //         totalProduce[1] += data.equipmentHoursDayList[index].pass;
+                        //         break;
+                        //     case doughnutLabel[2]:
+                        //         data2[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;   
+                        //         totalPower[2] += data.equipmentHoursDayList[index].power;
+                        //         totalProduce[2] += data.equipmentHoursDayList[index].pass;
+                        //         break;
+                        //     case doughnutLabel[3]:
+                        //         data3[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;   
+                        //         totalPower[3] += data.equipmentHoursDayList[index].power;
+                        //         totalProduce[3] += data.equipmentHoursDayList[index].pass;
+                        //         break;
+                        //     case doughnutLabel[4]:
+                        //         data4[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;   
+                        //         totalPower[4] += data.equipmentHoursDayList[index].power;
+                        //         totalProduce[4] += data.equipmentHoursDayList[index].pass;
+                        //         break;}               
                     }
                 }
                 const chartService = useChartStore();
-                let datasets = [{label: '一般型', data: data0}, {label: '鍵財型', data: data1}, {label: '成型機', data: data2}]
+                let datasets = [{label: '伸線機', data: [100,200,100,300,100,100,200,100,200]}, {label: '成型機', data: [100,200,100,300,100,100,200,100,200]}, {label: '打頭機', data: [100,200,100,300,100,100,200,100,200]}, {label: '淬火爐', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {label: '電鍍機', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}]
                 chartService.stackChart("stackedChartID", label, datasets);
-                chartService.doughnutChart("totalPower", doughnutLabel, totalPower);
-                chartService.doughnutChart("totalProduce", doughnutLabel, totalProduce);
-                this.sumProduce = totalProduce[0] + totalProduce[1] + totalProduce[2];
-                this.sumPower = totalPower[0] + totalPower[1] + totalPower[2];
+                chartService.doughnutChart("totalPower", doughnutLabel, [1000, 2000, 2000, 0, 0]);
+                chartService.doughnutChart("totalProduce", doughnutLabel, [1000, 2000,5000,0,0]);
+                this.sumProduce = 8000;
+                this.sumPower = 5000;
 
                 // 設定倒數動畫
                 this.setCountdownAnimation();
@@ -352,7 +374,7 @@ export default{
             #countdownLineForDayAccumulation{
                 width: 100%;
                 height: 0.5vh;
-                background-color: var(--red);
+                background-color: var(--redLight);
             }
 
             table{

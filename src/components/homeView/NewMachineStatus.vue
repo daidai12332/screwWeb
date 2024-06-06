@@ -18,12 +18,8 @@ export default{
         // 抓取資料庫新資料
         getNewestData(){
 
-            console.log("stop get data for displaying");
-            return;
-
             // 設定更新時間
             const now = new Date();
-            this.refTime = Date.now();
             this.updateTime = now.getMonth().toString().padStart(2, '0') + '-' + now.getDate().toString().padStart(2, '0') + ' ' + now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
 
             // 初始化
@@ -36,7 +32,7 @@ export default{
 
             // 進入資料庫
             fetch("http://localhost:8080/screw/findmachineDataNow",{
-            method: 'POST',
+            method: 'GET',
             headers:{
                 "Content-Type":"application/json"
             },
@@ -46,7 +42,7 @@ export default{
 
                 // 處理錯誤訊息
                 if(data.code != 200){
-                    this.dataList = null;
+                    this.dataList = [];
                     console.log(data);
                     return;
                 }
@@ -66,18 +62,28 @@ export default{
                 }
 
                 // 設定倒數動畫
-                this.setCountdownAnimation();
+                // this.setCountdownAnimation();
                 
                 // 設定單頁呈現資料
                 this.getShowData();
 
                 // 傳送公告
-                this.$emit('machineAlarm', this.errorNotify);
-
+                
                 // 若有 error 發送通知
-                if(errorNotify){
+                if(this.errorNotify.length){
+                    this.$emit('machineAlarm', this.errorNotify);
                     this.alarm();
+                } else {
+                    this.$emit('machineAlarm', []);
                 }
+
+                // 設定翻頁時間
+                this.stopTimer();
+
+                this.timerForNextPage = setInterval(() => {
+                        setTimeout(this.getShowData(), 0)
+                    }, this.time*this.totalPage);
+
             });
         },
 
@@ -108,59 +114,20 @@ export default{
         // 設定單頁呈現資料
         getShowData(){
             this.pageNow ++;
-
+            this.setCountdownAnimation();
             // 若已翻到最後一頁
             if( this.pageNow > this.totalPage){
                 this.getNewestData();
                 return;
             }
 
-            this.showList = null;
+            this.showList = [];
             let startIndex = 0 + ( this.pageNow -1 ) * this.high;
-            let largestIndex = high + ( this.pageNow -1 ) * this.high;
+            let largestIndex = this.high + ( this.pageNow -1 ) * this.high;
             let endIndex = largestIndex > this.dataList.length? this.dataList.length : largestIndex;
             for(startIndex; startIndex < endIndex; startIndex++){
                 this.showList.push(this.dataList[startIndex]);
             }
-
-            this.timerForNextPage = setTimeout(this.getShowData(), this.time);
-        },
-
-        // 簡化資料最後接收時間
-        simpleUpdateTime(time){
-            const year = time.toString().substring(0, 4);
-            const mon = time.toString().substring(5, 7);
-            const day = time.toString().substring(8, 10);
-            const hour = time.toString().substring(11, 13);
-            const min = time.toString().substring(14, 16);
-            const sec = time.toString().substring(17, 19);
-            const ms = time.toString().substring(20);
-            const lastReceiveTime = Date.UTC(year, mon, day, hour, min, sec, ms);
-            const difference = this.refTime - lastReceiveTime;
-
-            // 若差超過一天
-            const differDay = Math.floor( difference / 86400000);
-            if( differDay > 1){
-                return mon + '-'+ day + ' ' + hour + ':' + min
-            }
-
-            //
-            const differHour = Math.floor( (difference % 86400000) / 3600000);
-            const differMin = Math.floor( (difference % 3600000) / 60000);
-            const differSec = Math.floor( (difference % 60000) / 1000);
-            let simpleTime = '';
-            switch (true) {
-                case differHour !== 0:
-                    simpleTime += differHour + '時';
-                case differMin !== 0:
-                    simpleTime += differMin + '分';
-                case differSec !== 0:
-                    simpleTime += differSec + '秒前';
-                    break;
-                default:
-                    simpleTime = '小於1秒';
-            }
-            return simpleTime;
         },
 
         // 通知錯誤訊息
@@ -171,8 +138,9 @@ export default{
             for(let index in this.errorNotify){
                 if(!msg){
                     msg = this.errorNotify[index];
+                } else {
+                    msg += '\n' + this.errorNotify[index];
                 }
-                msg += '\n' + this.errorNotify[index];
             }
 
             Swal.fire({
@@ -186,7 +154,7 @@ export default{
 
         // 停止計時器
         stopTimer(){
-            clearTimeout(this.timerForNextPage);
+            window.clearInterval(this.timerForNextPage);
             this.timerForNextPage = null;
         },
 
@@ -243,9 +211,10 @@ export default{
                         <td>{{ item.name }}</td>
                         <td class="status">{{ item.status }}</td>
                         <td class="type">{{ item.type }}</td>
-                        <td>{{ item.orderNumber }}</td>
+                        <td v-if="!item.orderNumber">-</td>
+                        <td v-if="item.orderNumber">{{ item.orderNumber }}</td>
                         <td>{{ item.pass }}</td>
-                        <td>{{ this.simpleUpdateTime(item.time) }}</td>
+                        <td>{{ item.time.toString().substring(5, 10) + " " + item.time.toString().substring(11) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -316,13 +285,13 @@ export default{
                             width: 5.8vw;
                         }
                         .order{
-                            width: 5vw;
+                            width: 4vw;
                         }
                         .produce{
                             width: 6vw;
                         }
                         .updateTime{
-                            width: 8vw;
+                            width: 10vw;
                         }
                     }
                 }
@@ -359,7 +328,7 @@ export default{
             #countdownLineForMachineStatus{
                 width: 100%;
                 height: 0.5vh;
-                background-color: var(--yellow);
+                background-color: var(--yellowLight);
             }
 
             table{

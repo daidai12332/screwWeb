@@ -84,9 +84,9 @@ export default {
             <i class="fa-solid fa-clipboard-list" @click="changeRouter('/status/order')"></i>
         </div>
 
-        <div class="login item" :class="{now:this.htmlNow === '/login'}"  v-show="!this.isLogin">
+        <!-- <div class="login item" :class="{now:this.htmlNow === '/login'}"  v-show="!this.isLogin">
             <i class="fa-solid fa-user" @click="changeRouter('/login')"></i>
-        </div>
+        </div> -->
 
         <div class="memberMachine member item" :class="{now:this.htmlNow === '/member/machine' || this.htmlNow === '/login'}" v-show="this.isLogin">
             <i class="fa-solid fa-database" @click="changeRouter('/member/machine')"></i>

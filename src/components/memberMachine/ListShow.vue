@@ -33,6 +33,8 @@ export default{
         <button :class="{ now:this.tab===1}" @click="changeTab(1)">維修紀錄</button>
     </div>
 
+    
+
     <div class="basicInfoBlock tabShowBlock" v-show="this.tab === 0">
 
         <div class="basicInfo infoBlock">

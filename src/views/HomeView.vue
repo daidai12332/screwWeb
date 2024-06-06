@@ -8,7 +8,10 @@ export default {
     // lifecycle
     mounted() {
         // 播放公告
-        this.announce();
+        this.timerForNextPage = setInterval(() => {
+                setTimeout(this.announce(), 0)
+            }, 10000);
+
     },
     beforeUnmount(){
         // 停止計時器
@@ -18,8 +21,9 @@ export default {
     //
     methods: {
         // 接收機台要公告的資料
-        alarmFromMachine(errorListFromMachine){
-            this.errorList = errorListFromMachine;
+        alarmFromMachine(list){
+            this.errorList = list;
+            console.log(list);
         },
 
         // 接收單號要公告的資料
@@ -29,40 +33,41 @@ export default {
 
         // 播放公告
         announce(){
-            // 若無公告
-            if( !this.errorList && !this.finishList){
-                this.errorListIndex = 0;
-                this.finishListIndex = 0;
-                console.log('若無公告，請嘗試在 update 呼叫此方法，避免無窮迴圈');
-                // this.timerForRenew = setTimeout(this.announce(), 500000);
-                return;
-            }
+            // const announceText = document.getElementById('announceText');
 
-            const announceText = document.getElementById('announceText');
+            // // 若無公告
+            // if( !this.errorList.length){
+            //     announceText.innerText = '';
+            //     return;
+            // } else{
+            //     announceText.innerText = '【機台異常】機台：' + this.errorList[0] + ' 狀態異常';
+            // }
 
-            // 輪播機台公告
-            if( this.errorListIndex < this.errorList.length ){
-                announceText.innerText = '【機台異常】機台：' + this.errorList[this.errorListIndex] + ' 狀態異常';
-                this.errorListIndex++;
-                this.timerForRenew = setTimeout(this.announce(), this.time);
-                return;
-            }
-            if( this.errorListIndex === this.errorList.length ){
-                this.finishListIndex = 0;
-                this.errorListIndex++;
-            }
+            
 
-            // 輪播單號公告
-            if( this.finishListIndex < this.finishList.length ){
-                announceText.innerText = '【訂單完成】訂單：' + this.finishList[this.finishListIndex].orderNumber + ' 預計於十分鐘內完成，機台為 ' + this.finishList[this.finishListIndex].machineName;
-                this.finishListIndex++;
-                this.timerForRenew = setTimeout(this.announce(), this.time);
-                return;
-            }
-            if( this.finishListIndex === this.finishList.length ){
-                this.errorListIndex = 0;
-                this.finishListIndex++;
-            }
+            // // 輪播機台公告
+            // if( this.errorListIndex < this.errorList.length ){
+            //     announceText.innerText = '【機台異常】機台：' + this.errorList + ' 狀態異常';
+            //     this.errorListIndex++;
+            //     this.timerForRenew = setTimeout(this.announce(), this.time);
+            //     return;
+            // }
+            // if( this.errorListIndex === this.errorList.length ){
+            //     this.finishListIndex = 0;
+            //     this.errorListIndex++;
+            // }
+
+            // // 輪播單號公告
+            // if( this.finishListIndex < this.finishList.length ){
+            //     announceText.innerText = '【訂單完成】訂單：' + this.finishList.orderNumber + ' 預計於十分鐘內完成，機台為 ' + this.finishList[this.finishListIndex].machineName;
+            //     this.finishListIndex++;
+            //     this.timerForRenew = setTimeout(this.announce(), this.time);
+            //     return;
+            // }
+            // if( this.finishListIndex === this.finishList.length ){
+            //     this.errorListIndex = 0;
+            //     this.finishListIndex++;
+            // }
         },
 
         // 停止計時器
@@ -80,7 +85,7 @@ export default {
             time: 7000,
 
             // 畫面呈現
-            errorList: null,
+            errorList: [],
             finishList: null,
             errorListIndex: 0,
             finishListIndex: 0,
@@ -103,7 +108,8 @@ export default {
 
     <div class="announcement">
         <i class="fa-solid fa-bullhorn"></i>
-        <span id="announceText"></span>
+        <span id="announceText" v-if="!this.errorList.length"></span>
+        <span id="announceText" v-if="this.errorList.length">【機台異常】機台：{{ this.errorList[0] }}狀態異常</span>
     </div>
 
     <div class="component">

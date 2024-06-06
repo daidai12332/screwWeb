@@ -9,7 +9,7 @@ export default {
                 return;
             }
             this.tab = tabNumber;
-        }
+        },
 
     },
     data() {
@@ -21,8 +21,45 @@ export default {
             // 畫面呈現
             dataStatic: null,
             dataDynamic: null,
+
+            data: {
+                orderNumber: '01',
+                aim: 10000,
+                weight: 600,
+                startProcessIndex: 1,
+                endProcessIndex: 2,
+                formingString: {
+                    raw: [
+                        {
+                            name: '鍛造螺絲',
+                            amount: 1.5,
+                            carbon: 2.474
+                        }
+                    ],
+                    process: [
+                        {
+                            name: '電力',
+                            amount: 24000,
+                            carbon: 0.475
+                        }
+                    ]
+                },
+                grindTeethString:{
+                    process: [
+                        {
+                            name: '電力',
+                            amount: 0,
+                            carbon: 0.475
+                        }
+                    ]
+                }
+            }
         }
-    }
+    },
+    props:[
+        "data1",
+        "data2",
+    ]
 }
 </script>
 
@@ -37,49 +74,47 @@ export default {
     <div class="orderInfoBlock tabShowBlock" v-show="this.tab === 0">
 
         <div class="basicInfo infoBlock">
-            <div class="line">
+            <div class="line" v-if="this.data1">
                 <label for="orderNumber">訂單編號</label>
-                <select name="orderNumber" id="orderNumber" disabled>
-                    <option value="">請選擇</option>
-                </select>
+                <input type="text" :value="this.data1.orderNumber">
             </div>
-            <div class="line">
-                <label for="orderStatus">　狀態　</label><input id="orderStatus" type="text" disabled>
+            <div class="line" v-if="this.data1">
+                <label for="orderStatus">　狀態　</label><input id="orderStatus" type="text" :value="this.data1.status" disabled>
             </div>
-            <div class="line">
-                <label for="orderProduct">訂購品項</label><input id="orderProduct" type="text" disabled>
+            <div class="line" v-if="this.data1">
+                <label for="orderProduct">訂購品項</label><input id="orderProduct" type="text" :value="this.data1.item" disabled>
             </div>
-            <div class="line">
-                <label for="orderAmount">訂購數目</label><input id="orderAmount" type="number" disabled>
+            <div class="line" v-if="this.data1">
+                <label for="orderAmount">訂購數目</label><input id="orderAmount" type="number" :value="this.data1.number" disabled>
             </div>
         </div>
 
         <div class="orderContactInfo infoBlock">
             <p>訂購人資訊</p>
-            <div class="line">
-                <label for="orderPerson">名稱</label><input class="oneLineLeft" id="orderPerson" type="text" disabled>
-                <label for="orderPersonContact">電話</label><input id="orderPersonContact" type="tel" disabled>
+            <div class="line" v-if="this.data1">
+                <label for="orderPerson">名稱</label><input class="oneLineLeft" id="orderPerson" type="text" :value="this.data1.purchaserName" disabled>
+                <label for="orderPersonContact">電話</label><input id="orderPersonContact" type="tel" :value="this.data1.purchaserPhone" disabled>
             </div>
-            <div class="line topBlock">
-                <label for="orderPersonAddress">地址</label><input class="address" id="orderPersonAddress" type="text"
+            <div class="line topBlock" v-if="this.data1">
+                <label for="orderPersonAddress">地址</label><input class="address" id="orderPersonAddress" type="text" :value="this.data1.purchaserAddress"
                     disabled>
             </div>
 
             <p>收件人資訊</p>
-            <div class="line">
-                <label for="receivePerson">名稱</label><input class="oneLineLeft" id="receivePerson" type="text" disabled>
-                <label for="receivePersonContact">電話</label><input id="receivePersonContact" type="tel" disabled>
+            <div class="line" v-if="this.data1">
+                <label for="receivePerson">名稱</label><input class="oneLineLeft" id="receivePerson" type="text" :value="this.data1.receiverName" disabled>
+                <label for="receivePersonContact">電話</label><input id="receivePersonContact" type="tel" :value="this.data1.receiverPhone" disabled>
             </div>
-            <div class="line">
-                <label for="receiveAddress">地址</label><input class="address" id="receiveAddress" type="text" disabled>
+            <div class="line" v-if="this.data1">
+                <label for="receiveAddress">地址</label><input class="address" id="receiveAddress" type="text" :value="this.data1.receiverAddress" disabled>
             </div>
 
         </div>
 
         <div class="noteInfo infoBlock">
             <p>備註</p>
-            <div class="line">
-                <textarea name="note" id="noteInfo" disabled></textarea>
+            <div class="line" v-if="this.data1">
+                <textarea name="note" id="noteInfo" :value="this.data1.note" disabled></textarea>
             </div>
         </div>
 
@@ -98,14 +133,14 @@ export default {
 
             <div class="oneFlow">
                 <span>鍛造</span>
-                <div class="circle"></div>
+                <div class="circle" style="background-color: var(--green);"></div>
             </div>
 
-            <div class="line line2"></div>
+            <div class="line line2" style="border-color: var(--green);"></div>
 
             <div class="oneFlow">
                 <span>輾牙</span>
-                <div class="circle"></div>
+                <div class="circle need" style="background-color: var(--green);"></div>
             </div>
 
             <div class="line line3"></div>
@@ -127,16 +162,16 @@ export default {
         <div class="table">
             <table>
                 <tr>
-                    <td rowspan="4" scope="col" class="manufactureName title">輾牙</td>
+                    <td rowspan="4" scope="col" class="manufactureName title">鍛造成型</td>
                     <td scope="col" class="name title">原料名稱</td>
                     <td scope="col" class="amount title">使用量</td>
                     <td scope="col" class="carbonEmission title">碳排放係數</td>
                 </tr>
 
                 <tr class="item">
-                    <td>碳鋼</td>
-                    <td>1.26 <span> ( 公噸 ) </span></td>
-                    <td>2.575</td>
+                    <td>{{ this.data.formingString.raw[0].name }}</td>
+                    <td>{{ this.data.formingString.raw[0].amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ this.data.formingString.raw[0].carbon }}</td>
                 </tr>
 
                 <tr>
@@ -146,36 +181,24 @@ export default {
                 </tr>
 
                 <tr class="item">
-                    <td>碳鋼</td>
-                    <td>1.26 <span> ( 公噸 ) </span></td>
-                    <td>2.575</td>
+                    <td>{{ this.data.formingString.process[0].name }}</td>
+                    <td>{{ this.data.formingString.process[0].amount }}<span> ( 瓦特 ) </span></td>
+                    <td>{{ this.data.formingString.process[0].carbon }}</td>
                 </tr>
             </table>
 
-            <table>
+            <table>                
                 <tr>
-                    <td rowspan="4" scope="col" class="manufactureName title">熱處理</td>
-                    <td scope="col" class="name title">原料名稱</td>
-                    <td scope="col" class="amount title">使用量</td>
-                    <td scope="col" class="carbonEmission title">碳排放係數</td>
-                </tr>
-
-                <tr class="item">
-                    <td>碳鋼</td>
-                    <td>1.26 <span> ( 公噸 ) </span></td>
-                    <td>2.575</td>
-                </tr>
-
-                <tr>
+                    <td rowspan="4" scope="col" class="manufactureName title">輾牙</td>
                     <td class="name title">製程消耗物/排放物名稱</td>
                     <td scope="col" class="amount title">使用量</td>
                     <td class="carbonEmission title">碳排放係數</td>
                 </tr>
 
                 <tr class="item">
-                    <td>碳鋼</td>
-                    <td>1.26 <span> ( 公噸 ) </span></td>
-                    <td>2.575</td>
+                    <td>{{ this.data.grindTeethString.process[0].name }}</td>
+                    <td>{{ this.data.grindTeethString.process[0].amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ this.data.grindTeethString.process[0].carbon }}</td>
                 </tr>
             </table>
         </div>
@@ -184,12 +207,11 @@ export default {
 
     <div class="statisticsBlock tabShowBlock" v-show="this.tab === 2">
 
-
         <div class="traceTable statisticsTable">
 
             <p class="title">進度追蹤</p>
             <div class="table">
-                <p>目標生產量：</p>
+                <p>目標生產量：{{ this.data.aim }}</p>
                 <table>
                     <tr>
                         <td scope="col" class="manufactureName title">流程</td>
@@ -197,27 +219,24 @@ export default {
                         <td scope="col" class="produce title">累積生產量 (顆)</td>
                         <td scope="col" class="passRatio title">良率 (%)</td>
                         <td scope="col" class="finishRatio title">完成率 (%)</td>
-                        <td scope="col" class="estimateFinishTime title">累積花費時間</td>
                         <td scope="col" class="finishTime title">預估完成時間</td>
                     </tr>
 
                     <tr class="item">
-                        <td>鍛造</td>
-                        <td>test1</td>
-                        <td>500</td>
-                        <td>50%</td>
-                        <td>5%</td>
-                        <td>3hr</td>
-                        <td>2024-05-21 05:00</td>
+                        <td>鍛造成型</td>
+                        <td>YBF-1</td>
+                        <td>2400</td>
+                        <td>90%</td>
+                        <td>24%</td>
+                        <td>2024-06-10 01:31</td>
                     </tr>
                     <tr class="item">
-                        <td>鍛造</td>
-                        <td>test1</td>
-                        <td>500</td>
-                        <td>50%</td>
-                        <td>5%</td>
-                        <td>3hr</td>
-                        <td>2024-05-21 05:00</td>
+                        <td>輾牙</td>
+                        <td>CDH-1</td>
+                        <td>0</td>
+                        <td>-</td>
+                        <td>0%</td>
+                        <td>-</td>
                     </tr>
                 </table>
             </div>
@@ -231,6 +250,42 @@ export default {
 
                 <table>
                     <tr>
+                        <td rowspan="4" scope="col" class="manufactureName title">鍛造成形</td>
+                        <td scope="col" class="name title">原料</td>
+                        <td scope="col" class="amount title">使用量</td>
+                        <td scope="col" class="carbonEmission title">碳排放係數</td>
+                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                    </tr>
+
+                    <tr class="item">
+                        <td>{{ this.data.formingString.raw[0].name }}</td>
+                        <td>{{ this.data.formingString.raw[0].amount }}<span> ( 公噸 ) </span></td>
+                        <td>{{ this.data.formingString.raw[0].carbon }}</td>
+                        <td>{{ Math.round(this.data.formingString.raw[0].carbon * this.data.formingString.raw[0].amount*100)/100 }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="name title">消耗/排放物</td>
+                        <td scope="col" class="amount title">使用量</td>
+                        <td class="carbonEmission title">碳排放係數</td>
+                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                    </tr>
+
+                    <tr class="item">
+                        <td>{{ this.data.formingString.process[0].name }}</td>
+                        <td>{{ this.data.formingString.process[0].amount/1000 }}<span> ( 度 ) </span></td>
+                        <td>{{ this.data.formingString.process[0].carbon }}</td>
+                        <td>{{ Math.round(this.data.formingString.process[0].amount/1000 * this.data.formingString.process[0].carbon) }}</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="4" class="name title">產物碳排放量</td>
+                        <td>{{ Math.round(this.data.formingString.process[0].amount/1000 * this.data.formingString.process[0].carbon) + Math.round(this.data.formingString.raw[0].carbon * this.data.formingString.raw[0].amount*100)/100 }}</td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
                         <td rowspan="4" scope="col" class="manufactureName title">輾牙</td>
                         <td scope="col" class="name title">原料</td>
                         <td scope="col" class="amount title">使用量</td>
@@ -239,9 +294,10 @@ export default {
                     </tr>
 
                     <tr class="item">
-                        <td>碳鋼</td>
-                        <td>1.26 <span> ( 公噸 ) </span></td>
-                        <td>2.575</td>
+                        <td>呈上</td>
+                        <td>1<span> ( 公噸 ) </span></td>
+                        <td>14.71</td>
+                        <td>14.71</td>
                     </tr>
 
                     <tr>
@@ -252,45 +308,17 @@ export default {
                     </tr>
 
                     <tr class="item">
-                        <td>碳鋼</td>
-                        <td>1.26 <span> ( 公噸 ) </span></td>
-                        <td>2.575</td>
-                        <td>5</td>
+                        <td>電力</td>
+                        <td>0 <span> ( 度 ) </span></td>
+                        <td>0.475</td>
+                        <td>0</td>
                     </tr>
 
                     <tr>
                         <td colspan="4" class="name title">產物碳排放量</td>
-                        <td>15</td>
-                    </tr>
-                </table>
-
-                <table>
-                    <tr>
-                        <td rowspan="4" scope="col" class="manufactureName title">熱處理</td>
-                        <td scope="col" class="name title">原料</td>
-                        <td scope="col" class="amount title">使用量</td>
-                        <td scope="col" class="carbonEmission title">碳排放係數</td>
-                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                        <td>14.71</td>
                     </tr>
 
-                    <tr class="item">
-                        <td>碳鋼</td>
-                        <td>1.26 <span> ( 公噸 ) </span></td>
-                        <td>2.575</td>
-                    </tr>
-
-                    <tr>
-                        <td class="name title">消耗/排放物</td>
-                        <td scope="col" class="amount title">使用量</td>
-                        <td class="carbonEmission title">碳排放係數</td>
-                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
-                    </tr>
-
-                    <tr class="item">
-                        <td>碳鋼</td>
-                        <td>1.26 <span> ( 公噸 ) </span></td>
-                        <td>2.575</td>
-                    </tr>
                 </table>
             </div>
 
@@ -490,6 +518,7 @@ export default {
             border-bottom: 0.15vw solid var(--greenLight);
             position: absolute;
             top: 71%;
+            z-index: -1;
         }
 
         .line1 {

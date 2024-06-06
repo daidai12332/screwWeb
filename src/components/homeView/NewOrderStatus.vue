@@ -15,9 +15,6 @@ export default{
         // 抓取資料庫新資料
         getNewestData(){
 
-            console.log("stop get data for displaying");
-            return;
-
             // 設定更新時間
             const now = new Date();
             this.refTime = Date.now();
@@ -33,7 +30,7 @@ export default{
 
             // 進入資料庫
             fetch("http://localhost:8080/screw/orderDataDay",{
-            method: 'POST',
+            method: 'GET',
             headers:{
                 "Content-Type":"application/json"
             },
@@ -56,14 +53,6 @@ export default{
                 this.totalPage = Math.ceil( data.orderAndMachineList.length / this.high );
                 for(let index in data.orderAndMachineList){
                     this.dataList.push(data.orderAndMachineList[index]);
-                    if( this.finishTimeStatus(data.orderAndMachineList[index].finishTime) === 'LessThanTenMin' ){
-                        this.finishList.push(this.turnIntoPage(index));
-                        let announceItem = {
-                            orderNumber: data.orderAndMachineList[index].orderNumber,
-                            machineName: data.orderAndMachineList[index].name
-                        }
-                        this.finishNotify.push(announceItem);
-                    }
                 }
 
                 // 設定倒數動畫
@@ -72,13 +61,13 @@ export default{
                 // 設定單頁呈現資料
                 this.getShowData();
 
-                // 傳送公告
-                this.$emit('orderAlarm', this.finishNotify);
+                // 設定翻頁時間
+                this.stopTimer();
 
-                // 若有 error 發送通知
-                if(finishNotify){
-                    this.alarm();
-                }
+                this.timerForNextPage = setInterval(() => {
+                        setTimeout(this.getShowData(), 0)
+                    }, this.time*this.totalPage);
+
             });
         },
 
@@ -116,97 +105,12 @@ export default{
                 return;
             }
 
-            this.showList = null;
+            this.showList = [];
             let startIndex = 0 + ( this.pageNow -1 ) * this.high;
-            let largestIndex = high + ( this.pageNow -1 ) * this.high;
+            let largestIndex = this.high + ( this.pageNow -1 ) * this.high;
             let endIndex = largestIndex > this.dataList.length? this.dataList.length : largestIndex;
             for(startIndex; startIndex < endIndex; startIndex++){
                 this.showList.push(this.dataList[startIndex]);
-            }
-
-            this.timerForNextPage = setTimeout(this.getShowData(), this.time);
-        },
-
-        // 判斷結束時間的狀態
-        finishTimeStatus(){
-
-            const year = time.toString().substring(0, 4);
-            const mon = time.toString().substring(5, 7);
-            const day = time.toString().substring(8, 10);
-            const hour = time.toString().substring(11, 13);
-            const min = time.toString().substring(14, 16);
-            const sec = time.toString().substring(17, 19);
-            const ms = time.toString().substring(20);
-            const utcTime = Date.UTC(year, mon, day, hour, min, sec, ms);
-
-            const difference = this.refTime > utcTime ? this.refTime - utcTime : utcTime - this.refTime;
-
-            const differDay = Math.floor( difference / 86400000);
-            const differHour = Math.floor( (difference % 86400000) / 3600000);
-            const differMin = Math.floor( (difference % 3600000) / 60000);
-            if( differDay > 0){
-                return;
-            }
-            if( differHour > 0 ){
-                return 'LessThanToday';
-            }
-            if( differMin >= 10 ){
-                return 'LessThanOneHour';
-            }
-            return 'LessThanTenMin';
-        },
-
-        // 簡化資料時間 ( 最後接收時間 & 預計完成時間 )
-        simpleUpdateTime(time){
-            const year = time.toString().substring(0, 4);
-            const mon = time.toString().substring(5, 7);
-            const day = time.toString().substring(8, 10);
-            const hour = time.toString().substring(11, 13);
-            const min = time.toString().substring(14, 16);
-            const sec = time.toString().substring(17, 19);
-            const ms = time.toString().substring(20);
-            const utcTime = Date.UTC(year, mon, day, hour, min, sec, ms);
-
-            const difference = this.refTime > utcTime ? this.refTime - utcTime : utcTime - this.refTime;
-
-            // 若差超過一天
-            const differDay = Math.floor( difference / 86400000);
-            if( differDay > 1){
-                if( this.refTime > utcTime ){
-                    return mon + '-'+ day + ' ' + hour + ':' + min;
-                } else {
-                    return mon + '-' + day;
-                }
-            }
-
-            //
-            const differHour = Math.floor( (difference % 86400000) / 3600000);
-            const differMin = Math.floor( (difference % 3600000) / 60000);
-            const differSec = Math.floor( (difference % 60000) / 1000);
-            let simpleTime = '';
-
-            if( this.refTime > utcTime ){
-                switch (true) {
-                    case differHour !== 0:
-                        simpleTime += differHour + '時';
-                    case differMin !== 0:
-                        simpleTime += differMin + '分';
-                    case differSec !== 0:
-                        simpleTime += differSec + '秒前';
-                        break;
-                    default:
-                        simpleTime = '小於1秒';
-                }
-            } else {
-                switch (true) {
-                    case differHour !== 0:
-                        simpleTime += differHour + '時';
-                    case differMin > 10:
-                        simpleTime += differMin + '分鐘後';
-                        break;
-                    default:
-                        simpleTime = '小於10分鐘';
-                }   
             }
         },
 
@@ -233,7 +137,7 @@ export default{
 
         // 停止計時器
         stopTimer(){
-            clearTimeout(this.timerForNextPage);
+            window.clearInterval(this.timerForNextPage);
             this.timerForNextPage = null;
         },
 
@@ -280,7 +184,6 @@ export default{
                     <tr class="detail">
                         <th scope="col" class="orderNumber">訂單編號</th>
                         <th scope="col" class="aim">目標產量</th>
-                        <th scope="col" class="machineNumber">生產機台</th>
                         <th scope="col" class="machineType">種類</th>
                         <th scope="col" class="sofar">累積產量</th>
                         <th scope="col" class="finishRatio">完成率</th>
@@ -290,15 +193,14 @@ export default{
                 </thead>
 
                 <tbody>
-                    <tr class="content" :class="this.finishTimeStatus(item.finishTime)" v-for="item in this.showList">
+                    <tr class="content" v-for="item in this.showList">
                         <td>{{ item.orderNumber }}</td>
                         <td>{{ item.aim }}</td>
-                        <td>{{ item.name }}</td>
                         <td class="machineType">{{ item.type }}</td>
                         <td>{{ item.pass }}</td>
-                        <td>{{ item.pass / item.aim }}%</td>
-                        <td class="status">{{ this.simpleUpdateTime(item.finishTime) }}</td>
-                        <td>{{ this.simpleUpdateTime(item.updateTime) }}</td>
+                        <td>{{ Math.round(item.pass / item.aim *1000)/1000 }}%</td>
+                        <td>{{ item.finishTime.toString().substring(5, 10) + " " + item.finishTime.toString().substring(11, 16) }}</td>
+                        <td>{{ item.updateTime.toString().substring(5, 10) + " " + item.updateTime.toString().substring(11, 19) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -362,7 +264,7 @@ export default{
                             width: 6vw;
                         }
                         .aim{
-                            width: 6vw;
+                            width: 8vw;
                         }
                         .machineNumber{
                             width: 6vw;
@@ -374,10 +276,10 @@ export default{
                             width: 6.5vw;
                         }
                         .finishRatio{
-                            width: 6vw;
+                            width: 8vw;
                         }
                         .estimateFinishTime{
-                            width: 8vw;
+                            width: 10vw;
                         }
                         .updateTime{
                             width: 10vw;
@@ -417,7 +319,7 @@ export default{
             #countdownLineForOrderStatus{
                 width: 100%;
                 height: 0.5vh;
-                background-color: var(--green);
+                background-color: var(--greenLight);
             }
 
             table{

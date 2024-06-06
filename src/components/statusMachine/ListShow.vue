@@ -1,7 +1,15 @@
 <script>
 
 export default{
+
     methods: {
+
+        turnWord(bool){
+            if(bool){
+                return '使用中'
+            }
+            return '停用'
+        },
 
         // 改變顯示分頁
         changeTab(tabNumber){
@@ -9,8 +17,7 @@ export default{
                 return;
             }
             this.tab = tabNumber;
-        }
-        
+        },        
     },
     data(){
         return{
@@ -19,10 +26,34 @@ export default{
             tab: 0,
 
             // 畫面呈現
-            dataStatic: null,
             dataDynamic: null,
+
+            // 資料儲存
+            // machineName : machineDetail.name,
+            // machineUsage : machineDetail2.status,
+            // status : machineDetail.status,
+            // machineType : machineDetail.type,
+            // voltage : machineDetail2.voltage,
+            // buyTime : machineDetail2.purchaseDate,
+            // buyLocation : machineDetail2.location,
+            // buyPrice : machineDetail2.price,
+            // fixFreeExp : machineDetail2.warrantyDate,
+            // useExp : machineDetail2.lifespan,
+            // fixPerson : machineDetail2.maintenanceStaff,
+            // fixPhone : machineDetail2.phone,
+            // fixEmail : machineDetail2.email,
+            // fixAdress : machineDetail2.address,
+            // note : machineDetail2.note,
         }
-    }
+    },
+    props:[
+        "machineDetail",
+        "machineDetail2",
+        "machineDetail3",
+        "staticData1",
+        "staticData2",
+        "staticData3",
+    ]
 }
 </script>
 
@@ -37,73 +68,75 @@ export default{
     <div class="basicInfoBlock tabShowBlock" v-show="this.tab === 0">
 
         <div class="basicInfo infoBlock">
-            <div class="line">
-                <label for="machineName">　名稱　</label><input id="machineName" type="text" disabled>
+            <div class="line" v-if="this.machineDetail">
+                <label for="machineName">　名稱　</label><input id="machineName" type="text" :value="this.machineDetail.name" disabled>
             </div>
-            <div class="line">
+            <div class="line" v-if="this.machineDetail">
                 <label for="machineUsage">使用狀態</label>
-                <select name="machineUsage" id="machineUsage" disabled>
-                    <option value="">使用中</option>
-                    <option value="">停用</option>
+                <select name="machineUsage" id="machineUsage" :value="this.machineDetail2.status" disabled>
+                    <option value="true">使用中</option>
+                    <option value="false">停機</option>
                 </select>
             </div>
-            <div class="line">
-                <label for="status">運作狀態</label><input id="status" type="text" disabled>
+            <div class="line" v-if="this.machineDetail">
+                <label for="status">運作狀態</label><input id="status" type="text" :value="this.machineDetail.status" disabled>
             </div>
-            <div class="line">
+            <div class="line" v-if="this.machineDetail">
                 <label for="type">　種類　</label>
-                <select name="machineType" id="type" disabled>
-                    <option value="">一般機</option>
-                    <option value="">成型機</option>
-                    <option value="">鍵財機</option>
+                <select name="machineType" id="type" :value="this.machineDetail.type" disabled>
+                    <option value="成型機">成型機</option>
+                    <option value="伸線機">伸線機</option>
+                    <option value="打頭機">打頭機</option>
+                    <option value="淬火爐">淬火爐</option>
+                    <option value="電鍍機">電鍍機</option>
                 </select>
             </div>
-            <div class="line">
-                <label for="voltage">　電壓　</label><input id="voltage" type="number" disabled>
+            <div class="line" v-if="this.machineDetail">
+                <label for="voltage">　電壓　</label><input id="voltage" type="number" :value="this.machineDetail2.voltage" disabled>
                 <span> 伏特</span>
             </div>
         </div>
         
         <div class="buyInfo infoBlock">
             <p>採購</p>
-            <div class="line">
-                <label for="buyTime">購買時間</label><input id="buyTime" type="date" disabled>                
+            <div class="line" v-if="this.machineDetail">
+                <label for="buyTime">購買時間</label><input id="buyTime" type="date" :value="this.machineDetail2.purchaseDate" disabled>                
             </div>
-            <div class="line">
-                <label for="buyLocation">購買地點</label><input id="buyLocation" type="text" disabled>
+            <div class="line" v-if="this.machineDetail">
+                <label for="buyLocation">購買地點</label><input id="buyLocation" type="text" :value="this.machineDetail2.location" disabled>
             </div>
-            <div class="line">
-                <label for="buyPrice">購買價格</label><input id="buyPrice" type="number" disabled>
+            <div class="line" v-if="this.machineDetail">
+                <label for="buyPrice">購買價格</label><input id="buyPrice" type="number" :value="this.machineDetail2.price" disabled>
                 <span> 元</span>
             </div>
-            <div class="line">
-                <label for="fixFreeExp">保固日期</label><input id="fixFreeExp" type="date" disabled>
+            <div class="line" v-if="this.machineDetail">
+                <label for="fixFreeExp">保固日期</label><input id="fixFreeExp" type="date" :value="this.machineDetail2.warrantyDate" disabled>
             </div>
-            <div class="line">
-                <label for="useExp">使用年限</label><input id="useExp" type="date" disabled>
+            <div class="line" v-if="this.machineDetail">
+                <label for="useExp">使用年限</label><input id="useExp" type="date" :value="this.machineDetail2.lifespan" disabled>
             </div>
         </div>
 
         <div class="fixInfo infoBlock">
             <p>維修</p>
-            <div class="line">
-                <label for="fixPerson">維修人員姓名</label><input id="fixPerson" type="text" disabled>
+            <div class="line" v-if="this.machineDetail">
+                <label for="fixPerson">維修人員姓名</label><input id="fixPerson" type="text" :value="this.machineDetail2.maintenanceStaff" disabled>
             </div>
-            <div class="line">
-                <label for="fixPhone">　　電話　　</label><input id="fixPhone" type="tel" disabled>
+            <div class="line" v-if="this.machineDetail">
+                <label for="fixPhone">　　電話　　</label><input id="fixPhone" type="tel" :value="this.machineDetail2.phone" disabled>
             </div>
-            <div class="line">
-                <label for="fixEmail">　　電郵　　</label><input id="fixEmail" type="email" disabled>
+            <div class="line" v-if="this.machineDetail">
+                <label for="fixEmail">　　電郵　　</label><input id="fixEmail" type="email" :value="this.machineDetail2.email" disabled>
             </div>
-            <div class="line">
-                <label for="fixAdress">　　地址　　</label><input id="fixAdress" type="text" disabled>
+            <div class="line" v-if="this.machineDetail">
+                <label for="fixAdress">　　地址　　</label><input id="fixAdress" type="text" :value="this.machineDetail2.address" disabled>
             </div>
         </div>
 
-        <div class="noteInfo infoBlock">
+        <div class="noteInfo infoBlock" >
             <p>備註</p>
-            <div class="line">
-                <textarea name="note" id="noteInfo" disabled></textarea>
+            <div class="line" v-if="this.machineDetail">
+                <textarea name="note" id="noteInfo" :value="this.machineDetail2.note" disabled></textarea>
             </div>
         </div>
 
@@ -122,12 +155,18 @@ export default{
                     </tr>
                 </thead>
     
-                <tbody>
-                    <tr v-for="i in 10">
-                        <td>2025-05-17 05:30</td>
+                <tbody v-if="this.machineDetail">
+                    <tr>
+                        <td>2024-05-21</td>
                         <td>定期保養</td>
-                        <td class="fixResult">狀況良好</td>
-                        <td class="fixNote">沒什麼大問題，須注意清潔</td>
+                        <td class="fixResult">良好</td>
+                        <td class="fixNote">須注意清潔</td>
+                    </tr>
+                    <tr>
+                        <td>2024-05-22</td>
+                        <td>定期保養</td>
+                        <td class="fixResult">良好</td>
+                        <td class="fixNote">須注意清潔</td>
                     </tr>
                 </tbody>
             </table>
@@ -137,10 +176,10 @@ export default{
 
     <div class="statisticsBlock tabShowBlock" v-show="this.tab===2">
 
-        <div class="todayTable statisticsTable">
+        <div class="todayTable statisticsTable" v-if="this.machineDetail">
 
             <p>今日趨勢</p>
-            <div class="table">
+            <div class="table" v-if="this.staticData1">
                 <table>
                     <thead>
                         <tr>
@@ -153,11 +192,11 @@ export default{
                     </thead>
     
                     <tbody>
-                        <tr v-for="i in 24">
+                        <tr v-for="i in 10">
                             <td>{{ i-1 }}:00-{{ i }}:00</td>
-                            <td>2.456</td>
+                            <td>300</td>
                             <td>50000</td>
-                            <td class="fixResult">20%</td>
+                            <td class="fixResult">80%</td>
                             <td class="fixNote">80%</td>
                         </tr>
                     </tbody>
@@ -169,7 +208,7 @@ export default{
 
             <p>歷史資料</p>
             <div class="table">
-                <p>統計時間：</p>
+                <p>統計時間：2024-05-31 ~ 2024-06-06</p>
                 <table>
                     <thead>
                         <tr>
@@ -181,8 +220,8 @@ export default{
     
                     <tbody>
                         <tr>
-                            <td>360</td>
-                            <td>31%</td>
+                            <td>300</td>
+                            <td>80%</td>
                             <td>80%</td>
                         </tr>
                     </tbody>                    

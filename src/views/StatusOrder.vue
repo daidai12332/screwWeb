@@ -3,32 +3,110 @@ import List from '../components/statusOrder/List.vue'
 import ListShow from '../components/statusOrder/ListShow.vue'
 
 export default{
-    // mounted() {
-    //     console.log("MachineStatus");
-    //     // 修改所在介面顏色
-    //     const showService = useShowStore();
-    //     showService.modeChange(1);
-    //     console.log(showService.mode);
-    //     // 獲得單號資料
-    //     this.getDataNow();
-    // },
+
+    mounted() {
+
+    },
 
     methods: {
         changeMode(){
             this.isList = !this.isList;
         },
-    },
 
+        getData1(name){
+
+            // 進入資料庫
+            fetch(`http://localhost:8080/orderManagement/find_order_all`,{
+                method: 'GET',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            })
+            .then(res => res.json())
+            .then((data) => {
+
+                // 處理錯誤訊息
+                if(data.code != 200){
+                    this.dataList = null;
+                    console.log(data);
+                    return;
+                }
+
+                if(!data.orderManagementList){
+                    return;
+                }
+
+                for(let index in data.orderManagementList){
+                    if(data.orderManagementList[index].orderNumber === name){
+                        this.data1 = data.orderManagementList[index]
+                    }
+                }
+                this.staticData1 = data.equipmentHourList;
+
+            });
+
+        },
+
+        getData2(name){
+
+            return;
+            // 進入資料庫
+            fetch(`http://localhost:8080/orderManagement/get_order_manufacture?${name}`,{
+                method: 'POST',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            })
+            .then(res => res.json())
+            .then((data) => {
+
+                // 處理錯誤訊息
+                if(data.code != 200){
+                    this.dataList = null;
+                    console.log(data);
+                    return;
+                }
+
+                if(!data.orderManufacture){
+                    return;
+                }
+
+                this.data2 = data.orderManufacture;
+
+            });
+
+
+        },
+
+        getDetail(detail){
+            this.getData1(detail);
+            this.getData2(detail);
+        }
+
+    },
+    
     data() {
         return {
             isList: true,
             dataShow: null,
-            // list:[],
-            // machineDataList:[],
-            // names: ["test1", "test2"],
-            // mName: "",
-            // machineStatusPage:0,
-            // machinePageNumber:0,
+            data1: "",
+            data2: "",
+            formingString:{
+                raw:[
+                    {
+                        name: '鍛造螺絲',
+                        amount: 1.05,
+                        carbon: 2.474,
+                    }
+                ],
+                process:[
+                    {
+                        name: '電力',
+                        amount: 24000,
+                        carbon: 0.475,
+                    }
+                ]
+            },
 
         }
     },
@@ -50,11 +128,11 @@ export default{
         </div>
 
         <div class="listArea">
-            <List />
+            <List @sendMachineDetail="getDetail"  />
         </div>
 
         <div class="showArea">
-            <ListShow />
+            <ListShow :data1="this.data1" :data2="this.data2" />
         </div>
     </div>
 

@@ -13,10 +13,18 @@ export default{
 
     //
     methods: {
+
+        // 檢視機台詳細資料
+        checkMachineDetail(name){
+            this.machineDetail = name;
+            this.$emit('sendMachineDetail', this.machineDetail)
+        },
+
         init(){
             this.pageNow = 1;
 
             // 定時更新資料
+            this.getNewestData()
             this.timerForNewStatus = setInterval(() => {
                     setTimeout(this.getNewestData(), 0)
                 }, this.time);
@@ -24,9 +32,6 @@ export default{
 
         // 抓取資料庫新資料
         getNewestData(){
-
-            console.log("stop get data for displaying");
-            return;
 
             // 設定更新時間
             const now = new Date();
@@ -38,11 +43,11 @@ export default{
             this.totalPage = 0;
 
             // 進入資料庫
-            fetch("http://localhost:8080/screw/findmachineDataNow",{
-                method: 'POST',
-                headers:{
-                    "Content-Type":"application/json"
-                },
+            fetch("http://localhost:8080/screw/orderDataDay",{
+            method: 'GET',
+            headers:{
+                "Content-Type":"application/json"
+            },
             })
             .then(res => res.json())
             .then((data) => {
@@ -54,18 +59,15 @@ export default{
                     return;
                 }
 
-                if(!data.machineDataList){
+                console.log(data.orderAndMachineList);
+                if(!data.orderAndMachineList){
                     return;
                 }
 
                 // 設定顯示資料
-                this.totalPage = Math.ceil( data.machineDataList.length / this.high );
-                for(let index in data.machineDataList){
-                    this.dataList.push(data.machineDataList[index]);
-                    if( data.machineDataList[index].status === 'error' ){
-                        this.errorList.push(this.turnIntoPage(index));
-                        this.errorNotify.push(data.machineDataList[index].name);
-                    }
+                this.totalPage = Math.ceil( data.orderAndMachineList.length / this.high );
+                for(let index in data.orderAndMachineList){
+                    this.dataList.push(data.orderAndMachineList[index]);
                 }
 
                 // 設定倒數動畫
@@ -88,15 +90,15 @@ export default{
                 iterations: 1,
             }
 
-            const countdownLine = document.getElementById('countdownLineForMachineDetail');
+            const countdownLine = document.getElementById('countdownLineForOrderDetail');
             countdownLine.animate(countDownAnimation, countDownTiming);
         },
 
         // 設定單頁呈現資料
         getShowData(){
-            this.showList = null;
+            this.showList = [];
             let startIndex = 0 + ( this.pageNow -1 ) * this.high;
-            let largestIndex = high + ( this.pageNow -1 ) * this.high;
+            let largestIndex = this.high + ( this.pageNow -1 ) * this.high;
             let endIndex = largestIndex > this.dataList.length? this.dataList.length : largestIndex;
             for(startIndex; startIndex < endIndex; startIndex++){
                 this.showList.push(this.dataList[startIndex]);
@@ -137,43 +139,42 @@ export default{
     <div class="orderStatus">
 
         <div class="table">
-            <p v-if="!this.dataList.length" style="font-size: 1vw">暫無資料</p>
-            <table v-if="this.dataList.length">
+            <table>
                 <thead>
                     <tr class="detail">
                         <th scope="col" class="orderNumber">訂單編號</th>
                         <th scope="col" class="aim">目標產量</th>
-                        <th scope="col" class="machineName">生產機台</th>
                         <th scope="col" class="machineType">種類</th>
                         <th scope="col" class="sofar">累積產量</th>
                         <th scope="col" class="finishRatio">完成率</th>
+                        <th scope="col" class="estimateFinishTime">累積時間</th>
                         <th scope="col" class="estimateFinishTime">預估完成時間</th>
                         <th scope="col" class="updateTime">最後接收時間</th>
                     </tr>
                 </thead>
     
                 <tbody>
-                    <tr class="content" v-for="item in this.showList">
-                        <td>1</td>
-                        <td>500000</td>
-                        <td>test01</td>
-                        <td>鍵財機</td>
-                        <td>5000</td>
-                        <td>12%</td>
-                        <td>2024-05-12 12:00</td>
-                        <td>2024-05-12 05:30</td>
+                    <tr class="content" v-for="item in this.showList"  @click="checkMachineDetail(item.orderNumber)">
+                        <td>{{ item.orderNumber }}</td>
+                        <td>{{ item.aim }}</td>
+                        <td>{{ item.type }}</td>
+                        <td>{{ item.pass }}</td>
+                        <td>{{ Math.round(item.pass / item.aim *1000)/1000 }}%</td>
+                        <td>{{ item.totalTime }}</td>
+                        <td>{{ item.finishTime.toString().substring(5, 10) + " " + item.finishTime.toString().substring(11, 16) }}</td>
+                        <td>{{ item.updateTime.toString().substring(5, 10) + " " + item.updateTime.toString().substring(11, 19) }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
         <div class="button">
-            <!-- <button :class="{ 'now': this.pageNow === i }" v-for="i in this.totalPage">{{ i }}</button> -->
+            <button class="now" v-for="i in 1">1</button>
         </div>        
 
 
         <div class="note">
-            <div id="countdownLineForMachineDetail"></div>
+            <div id="countdownLineForOrderDetail"></div>
             <table>
                 <tr class="countdown">
                     <th scope="row" class="renewTime">更新時間：{{ this.updateTime }}</th>

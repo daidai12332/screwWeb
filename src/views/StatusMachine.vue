@@ -15,22 +15,176 @@ export default {
     // },
 
     methods: {
+        // 抓取資料庫新資料
+        getNewestData(machineName){
+
+            // 進入資料庫
+            fetch("http://localhost:8080/screw/findMachines",{
+                method: 'POST',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            })
+            .then(res => res.json())
+            .then((data) => {
+
+                // 處理錯誤訊息
+                if(data.code != 200){
+                    this.dataList = null;
+                    console.log(data);
+                    return;
+                }
+
+                if(!data.machineNameList){
+                    return;
+                }
+
+                for( let index in data.machineNameList){
+                    if(data.machineNameList[index].name === machineName){
+                        this.dataShow2 = data.machineNameList[index]
+                    }
+                }
+
+            });
+        },
+
+        getPage3Data(machineName){
+
+            // 進入資料庫
+            fetch(`http://localhost:8080/screw/equipmentRecord?name=${machineName}`,{
+                method: 'POST',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            })
+            .then(res => res.json())
+            .then((data) => {
+
+                // 處理錯誤訊息
+                if(data.code != 200){
+                    this.dataList = null;
+                    console.log(data);
+                    return;
+                }
+
+                if(!data.maintenanceList){
+                    return;
+                }
+
+                for( let index in data.maintenanceList){
+                    if(data.maintenanceList[index].name === machineName){
+                        this.dataShow3 = data.maintenanceList[index]
+                    }
+                }
+
+            });
+
+        },
+
+        getData1(name){
+            
+            // 進入資料庫
+            fetch(`http://localhost:8080/screw/machineDayData?name=${name}`,{
+                method: 'POST',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            })
+            .then(res => res.json())
+            .then((data) => {
+
+                // 處理錯誤訊息
+                if(data.code != 200){
+                    this.dataList = null;
+                    console.log(data);
+                    return;
+                }
+
+                if(!data.equipmentHourList){
+                    return;
+                }
+                this.staticData1 = data.equipmentHourList;
+
+            });
+        },
+
+        getData2(name){
+            // 進入資料庫
+            fetch(`http://localhost:8080/screw/machineWeekAvg?name=${name}`,{
+                method: 'POST',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            })
+            .then(res => res.json())
+            .then((data) => {
+
+                // 處理錯誤訊息
+                if(data.code != 200){
+                    this.dataList = null;
+                    console.log(data);
+                    return;
+                }
+
+                if(!data.equipmentWeek){
+                    return;
+                }
+                this.staticData2.startTime = data.startTime
+                this.staticData2.endTime = data.endTime
+                this.staticData2.data = data.equipmentWeek;
+            });
+
+        },
+        
+        getData3(name){
+            // 進入資料庫
+            fetch(`http://localhost:8080/screw/recordStatistics?name=${name}`,{
+                method: 'POST',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+            })
+            .then(res => res.json())
+            .then((data) => {
+
+                // 處理錯誤訊息
+                if(data.code != 200){
+                    this.dataList = null;
+                    console.log(data);
+                    return;
+                }
+
+                if(!data.recordStatisticsList){
+                    return;
+                }
+                this.staticData3 = data.recordStatisticsList;
+            });
+
+        },
+
         changeMode(){
             this.isList = !this.isList;
         },
+        getDetail(detail){
+            this.dataShow = detail;
+            this.getNewestData(detail.name);
+            this.getPage3Data(detail.name);
+            this.getData1(detail.name);
+            this.getData2(detail.name);
+            this.getData3(detail.name);
+        }
+        
     },
 
     data() {
         return {
             isList: true,
             dataShow: null,
-            // list:[],
-            // machineDataList:[],
-            // names: ["test1", "test2"],
-            // mName: "",
-            // machineStatusPage:0,
-            // machinePageNumber:0,
-
+            dataShow2: null,
+            dataShow3: null,
+            staticData1: null,
+            staticData2: null,
+            staticData3: null,
         }
     },
     components: {
@@ -50,11 +204,13 @@ export default {
         </div>
 
         <div class="listArea">
-            <List />
+            <List @sendMachineDetail="getDetail" />
         </div>
 
         <div class="showArea">
-            <ListShow />
+            <ListShow :machineDetail="this.dataShow" :machineDetail2="this.dataShow2" 
+            :machineDetail3="this.dataShow3"
+             :staticData1="this.staticData1" :staticData2="this.staticData2" :staticData3="this.staticData3" />
         </div>
     </div>
 </template>
