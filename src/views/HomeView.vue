@@ -26,48 +26,14 @@ export default {
             console.log(list);
         },
 
-        // 接收單號要公告的資料
-        alarmFromOrder(finishListFromMachine){
-            this.finishList = finishListFromMachine;
-        },
-
         // 播放公告
         announce(){
-            // const announceText = document.getElementById('announceText');
-
-            // // 若無公告
-            // if( !this.errorList.length){
-            //     announceText.innerText = '';
-            //     return;
-            // } else{
-            //     announceText.innerText = '【機台異常】機台：' + this.errorList[0] + ' 狀態異常';
-            // }
-
-            
-
-            // // 輪播機台公告
-            // if( this.errorListIndex < this.errorList.length ){
-            //     announceText.innerText = '【機台異常】機台：' + this.errorList + ' 狀態異常';
-            //     this.errorListIndex++;
-            //     this.timerForRenew = setTimeout(this.announce(), this.time);
-            //     return;
-            // }
-            // if( this.errorListIndex === this.errorList.length ){
-            //     this.finishListIndex = 0;
-            //     this.errorListIndex++;
-            // }
-
-            // // 輪播單號公告
-            // if( this.finishListIndex < this.finishList.length ){
-            //     announceText.innerText = '【訂單完成】訂單：' + this.finishList.orderNumber + ' 預計於十分鐘內完成，機台為 ' + this.finishList[this.finishListIndex].machineName;
-            //     this.finishListIndex++;
-            //     this.timerForRenew = setTimeout(this.announce(), this.time);
-            //     return;
-            // }
-            // if( this.finishListIndex === this.finishList.length ){
-            //     this.errorListIndex = 0;
-            //     this.finishListIndex++;
-            // }
+            if( !this.errorList.length ){
+                return;
+            }
+            for(let index in this.errorList){
+                this.errorText += this.errorList[index];
+            }
         },
 
         // 停止計時器
@@ -86,7 +52,7 @@ export default {
 
             // 畫面呈現
             errorList: [],
-            finishList: null,
+            errorText:"",
             errorListIndex: 0,
             finishListIndex: 0,
             
@@ -123,7 +89,7 @@ export default {
                 <DayAccumulation />
             </div>
             <div class="bottom">
-                <NewOrderStatus @orderAlarm="alarmFromOrder" />
+                <NewOrderStatus />
             </div>
         </div>
 

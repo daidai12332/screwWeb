@@ -49,9 +49,8 @@ export default{
 
         getData2(name){
 
-            return;
             // 進入資料庫
-            fetch(`http://localhost:8080/orderManagement/get_order_manufacture?${name}`,{
+            fetch(`http://localhost:8080/order/get_order_manufacture?orderNumber=${name}`,{
                 method: 'POST',
                 headers:{
                     "Content-Type":"application/json"
@@ -73,6 +72,28 @@ export default{
 
                 this.data2 = data.orderManufacture;
 
+                if(this.data2.pullThreadString){
+                    this.data2.pullThreadString = JSON.parse(data.orderManufacture.pullThreadString);
+                }
+
+                if(this.data2.formingString){
+                    this.data2.formingString = JSON.parse(data.orderManufacture.formingString);
+                }
+
+                if(this.data2.grindTeethString){
+                    this.data2.grindTeethString = JSON.parse(data.orderManufacture.grindTeethString);
+                }
+
+                if(this.data2.heatTreatmentString){
+                    this.data2.heatTreatmentString = JSON.parse(data.orderManufacture.heatTreatmentString);
+                }
+
+                if(this.data2.electroplatingString){
+                    this.data2.electroplatingString = JSON.parse(data.orderManufacture.electroplatingString);
+                }
+
+                console.log(this.data2);
+
             });
 
 
@@ -91,23 +112,6 @@ export default{
             dataShow: null,
             data1: "",
             data2: "",
-            formingString:{
-                raw:[
-                    {
-                        name: '鍛造螺絲',
-                        amount: 1.05,
-                        carbon: 2.474,
-                    }
-                ],
-                process:[
-                    {
-                        name: '電力',
-                        amount: 24000,
-                        carbon: 0.475,
-                    }
-                ]
-            },
-
         }
     },
     components: {

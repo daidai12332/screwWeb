@@ -94,12 +94,13 @@ export default{
                             data0[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;
                             totalPower[0] += data.equipmentHoursDayList[index].power;
                             totalProduce[0] += data.equipmentHoursDayList[index].pass;
+                            console.log(data0);
+                            console.log(totalPower);
                             break;
                         case doughnutLabel[1]:
                             data1[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;                        
                             totalPower[1] += data.equipmentHoursDayList[index].power;
                             totalProduce[1] += data.equipmentHoursDayList[index].pass;
-                            console.log(totalProduce[1]);
                             break;
                         case doughnutLabel[2]:
                             data2[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;                                                    
@@ -119,54 +120,54 @@ export default{
                     }                    
                 }
                 fetch("http://localhost:8080/screw/machineNewHourData",{
-            method: 'GET',
-            headers:{
-                "Content-Type":"application/json"
-            },
-            })
-            .then(res => res.json())
-            .then((data) => {
-                if(data.code != 200){
-                    console.log(data);
-                } else {
-                    console.log(data.equipmentHourList);
-                    for(let index in data.equipmentHourList){
-                        console.log(data.equipmentHourList[index].pass);
-                        // switch (data.equipmentHourList[index].type) {
-                        //     case doughnutLabel[0]:
-                        //         data0[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;
-                        //         totalPower[0] += data.equipmentHoursDayList[index].power;
-                        //         totalProduce[0] += data.equipmentHoursDayList[index].pass;
-                        //         break;
-                        //     case doughnutLabel[1]:
-                        //         data1[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;      
-                        //         totalPower[1] += data.equipmentHoursDayList[index].power;
-                        //         totalProduce[1] += data.equipmentHoursDayList[index].pass;
-                        //         break;
-                        //     case doughnutLabel[2]:
-                        //         data2[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;   
-                        //         totalPower[2] += data.equipmentHoursDayList[index].power;
-                        //         totalProduce[2] += data.equipmentHoursDayList[index].pass;
-                        //         break;
-                        //     case doughnutLabel[3]:
-                        //         data3[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;   
-                        //         totalPower[3] += data.equipmentHoursDayList[index].power;
-                        //         totalProduce[3] += data.equipmentHoursDayList[index].pass;
-                        //         break;
-                        //     case doughnutLabel[4]:
-                        //         data4[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;   
-                        //         totalPower[4] += data.equipmentHoursDayList[index].power;
-                        //         totalProduce[4] += data.equipmentHoursDayList[index].pass;
-                        //         break;}               
+                    method: 'GET',
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+                })
+                .then(res => res.json())
+                .then((data) => {
+                    if(data.code != 200){
+                        console.log(data);
+                    } else {
+                        console.log(data.equipmentHourList);
+                        for(let index in data.equipmentHourList){
+                            console.log(data.equipmentHourList[index].pass);
+                            switch (data.equipmentHourList[index].type) {
+                                case doughnutLabel[0]:
+                                    data0[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;
+                                    totalPower[0] += data.equipmentHoursDayList[index].power;
+                                    totalProduce[0] += data.equipmentHoursDayList[index].pass;
+                                    break;
+                                case doughnutLabel[1]:
+                                    data1[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;      
+                                    totalPower[1] += data.equipmentHoursDayList[index].power;
+                                    totalProduce[1] += data.equipmentHoursDayList[index].pass;
+                                    break;
+                                case doughnutLabel[2]:
+                                    data2[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;   
+                                    totalPower[2] += data.equipmentHoursDayList[index].power;
+                                    totalProduce[2] += data.equipmentHoursDayList[index].pass;
+                                    break;
+                                case doughnutLabel[3]:
+                                    data3[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;   
+                                    totalPower[3] += data.equipmentHoursDayList[index].power;
+                                    totalProduce[3] += data.equipmentHoursDayList[index].pass;
+                                    break;
+                                case doughnutLabel[4]:
+                                    data4[parseInt(data.equipmentHoursDayList[index].time.substring(11,13))] = data.equipmentHoursDayList[index].pass;   
+                                    totalPower[4] += data.equipmentHoursDayList[index].power;
+                                    totalProduce[4] += data.equipmentHoursDayList[index].pass;
+                                    break;}               
+                        }
                     }
-                }
                 const chartService = useChartStore();
-                let datasets = [{label: '伸線機', data: [100,200,100,300,100,100,200,100,200]}, {label: '成型機', data: [100,200,100,300,100,100,200,100,200]}, {label: '打頭機', data: [100,200,100,300,100,100,200,100,200]}, {label: '淬火爐', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}, {label: '電鍍機', data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}]
+                let datasets = [{label: '伸線機', data: data0}, {label: '成型機', data: data1}, {label: '打頭機', data: data2}, {label: '淬火爐', data: data3}, {label: '電鍍機', data: data4}]
                 chartService.stackChart("stackedChartID", label, datasets);
-                chartService.doughnutChart("totalPower", doughnutLabel, [1000, 2000, 2000, 0, 0]);
-                chartService.doughnutChart("totalProduce", doughnutLabel, [1000, 2000,5000,0,0]);
-                this.sumProduce = 8000;
-                this.sumPower = 5000;
+                this.sumPower = totalPower[0] + totalPower[1] + totalPower[2] + totalPower[3] + totalPower[4];
+                chartService.doughnutChart("totalPower", doughnutLabel, totalPower);
+                this.sumProduce = totalProduce[0] + totalProduce[1] + totalProduce[2] + totalProduce[3] + totalProduce[4];
+                chartService.doughnutChart("totalProduce", doughnutLabel, totalProduce);
 
                 // 設定倒數動畫
                 this.setCountdownAnimation();

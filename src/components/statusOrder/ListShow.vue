@@ -22,38 +22,6 @@ export default {
             dataStatic: null,
             dataDynamic: null,
 
-            data: {
-                orderNumber: '01',
-                aim: 10000,
-                weight: 600,
-                startProcessIndex: 1,
-                endProcessIndex: 2,
-                formingString: {
-                    raw: [
-                        {
-                            name: '鍛造螺絲',
-                            amount: 1.5,
-                            carbon: 2.474
-                        }
-                    ],
-                    process: [
-                        {
-                            name: '電力',
-                            amount: 24000,
-                            carbon: 0.475
-                        }
-                    ]
-                },
-                grindTeethString:{
-                    process: [
-                        {
-                            name: '電力',
-                            amount: 0,
-                            carbon: 0.475
-                        }
-                    ]
-                }
-            }
         }
     },
     props:[
@@ -126,52 +94,53 @@ export default {
 
             <div class="oneFlow">
                 <span>抽線</span>
-                <div class="circle"></div>
+                <div class="circle" :class="{ need: this.data2.startProcessIndex === 0 }"></div>
             </div>
 
-            <div class="line line1"></div>
+            <div class="line line1" :class="{ need: this.data2.startProcessIndex <= 0 && this.data2.endProcessIndex >=1 }"></div>
 
             <div class="oneFlow">
                 <span>鍛造</span>
-                <div class="circle" style="background-color: var(--green);"></div>
+                <div class="circle" :class="{ need: this.data2.startProcessIndex <= 1 && this.data2.endProcessIndex >= 1 }"></div>
             </div>
 
-            <div class="line line2" style="border-color: var(--green);"></div>
+            <div class="line line2":class="{ need: this.data2.startProcessIndex <= 1 && this.data2.endProcessIndex >=2 }"></div>
 
             <div class="oneFlow">
                 <span>輾牙</span>
-                <div class="circle need" style="background-color: var(--green);"></div>
+                <div class="circle" :class="{ need: this.data2.startProcessIndex <= 2 && this.data2.endProcessIndex >= 2 }"></div>
             </div>
 
-            <div class="line line3"></div>
+            <div class="line line3":class="{ need: this.data2.startProcessIndex <= 2 && this.data2.endProcessIndex >=3 }"></div>
 
             <div class="oneFlow">
                 <span>熱處理</span>
-                <div class="circle"></div>
+                <div class="circle" :class="{need: this.data2.startProcessIndex <= 3 && this.data2.endProcessIndex >= 3}"></div>
             </div>
 
-            <div class="line line4"></div>
+            <div class="line line4":class="{ need: this.data2.startProcessIndex <= 3 && this.data2.endProcessIndex >=4 }"></div>
 
             <div class="oneFlow">
                 <span>電鍍</span>
-                <div class="circle"></div>
+                <div class="circle" :class="{need: this.data2.startProcessIndex <= 4 && this.data2.endProcessIndex === 4}"></div>
             </div>
 
         </div>
 
         <div class="table">
-            <table>
+
+            <table  v-if="this.data2.pullThreadString">
                 <tr>
-                    <td rowspan="4" scope="col" class="manufactureName title">鍛造成型</td>
+                    <td rowspan="4" scope="col" class="manufactureName title">抽線</td>
                     <td scope="col" class="name title">原料名稱</td>
                     <td scope="col" class="amount title">使用量</td>
                     <td scope="col" class="carbonEmission title">碳排放係數</td>
                 </tr>
 
-                <tr class="item">
-                    <td>{{ this.data.formingString.raw[0].name }}</td>
-                    <td>{{ this.data.formingString.raw[0].amount }}<span> ( 公噸 ) </span></td>
-                    <td>{{ this.data.formingString.raw[0].carbon }}</td>
+                <tr class="item" v-for="item in this.data2.pullThreadString.raw">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
                 </tr>
 
                 <tr>
@@ -180,25 +149,118 @@ export default {
                     <td class="carbonEmission title">碳排放係數</td>
                 </tr>
 
-                <tr class="item">
-                    <td>{{ this.data.formingString.process[0].name }}</td>
-                    <td>{{ this.data.formingString.process[0].amount }}<span> ( 瓦特 ) </span></td>
-                    <td>{{ this.data.formingString.process[0].carbon }}</td>
+                <tr class="item" v-for="item in this.data2.pullThreadString.process">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 瓦特 ) </span></td>
+                    <td>{{ item.carbon }}</td>
                 </tr>
             </table>
 
-            <table>                
+            <table  v-if="this.data2.formingString">
                 <tr>
-                    <td rowspan="4" scope="col" class="manufactureName title">輾牙</td>
+                    <td rowspan="4" scope="col" class="manufactureName title">鍛造</td>
+                    <td scope="col" class="name title">原料名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td scope="col" class="carbonEmission title">碳排放係數</td>
+                </tr>
+
+                <tr class="item" v-if="this.data2.formingString.raw" v-for="item in this.data2.formingString.raw">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                </tr>
+
+                <tr>
                     <td class="name title">製程消耗物/排放物名稱</td>
                     <td scope="col" class="amount title">使用量</td>
                     <td class="carbonEmission title">碳排放係數</td>
                 </tr>
 
-                <tr class="item">
-                    <td>{{ this.data.grindTeethString.process[0].name }}</td>
-                    <td>{{ this.data.grindTeethString.process[0].amount }}<span> ( 公噸 ) </span></td>
-                    <td>{{ this.data.grindTeethString.process[0].carbon }}</td>
+                <tr class="item" v-for="item in this.data2.formingString.process">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                </tr>
+            </table>
+
+            <table  v-if="this.data2.grindTeethString">
+                <tr>
+                    <td rowspan="4" scope="col" class="manufactureName title">輾牙</td>
+                    <td scope="col" class="name title">原料名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td scope="col" class="carbonEmission title">碳排放係數</td>
+                </tr>
+
+                <tr class="item" v-if="this.data2.grindTeethString.raw" v-for="item in this.data2.grindTeethString.raw">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                </tr>
+
+                <tr>
+                    <td class="name title">製程消耗物/排放物名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td class="carbonEmission title">碳排放係數</td>
+                </tr>
+
+                <tr class="item" v-for="item in this.data2.grindTeethString.process">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                </tr>
+            </table>
+
+            <table  v-if="this.data2.heatTreatmentString">
+                <tr>
+                    <td rowspan="4" scope="col" class="manufactureName title">熱處理</td>
+                    <td scope="col" class="name title">原料名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td scope="col" class="carbonEmission title">碳排放係數</td>
+                </tr>
+
+                <tr class="item" v-if="this.data2.heatTreatmentString.raw" v-for="item in this.data2.heatTreatmentString.raw">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                </tr>
+
+                <tr>
+                    <td class="name title">製程消耗物/排放物名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td class="carbonEmission title">碳排放係數</td>
+                </tr>
+
+                <tr class="item" v-for="item in this.data2.heatTreatmentString.process">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                </tr>
+            </table>
+
+            <table  v-if="this.data2.electroplatingString">
+                <tr>
+                    <td rowspan="4" scope="col" class="manufactureName title">電鍍</td>
+                    <td scope="col" class="name title">原料名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td scope="col" class="carbonEmission title">碳排放係數</td>
+                </tr>
+
+                <tr class="item" v-if="this.data2.electroplatingString.raw" v-for="item in this.data2.electroplatingString.raw">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                </tr>
+
+                <tr>
+                    <td class="name title">製程消耗物/排放物名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td class="carbonEmission title">碳排放係數</td>
+                </tr>
+
+                <tr class="item" v-for="item in this.data2.electroplatingString.process">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
                 </tr>
             </table>
         </div>
@@ -207,11 +269,11 @@ export default {
 
     <div class="statisticsBlock tabShowBlock" v-show="this.tab === 2">
 
-        <div class="traceTable statisticsTable">
+        <!-- <div class="traceTable statisticsTable">
 
             <p class="title">進度追蹤</p>
             <div class="table">
-                <p>目標生產量：{{ this.data.aim }}</p>
+                <p>目標生產量：{{ this.data2.aim }}</p>
                 <table>
                     <tr>
                         <td scope="col" class="manufactureName title">流程</td>
@@ -241,93 +303,176 @@ export default {
                 </table>
             </div>
 
-        </div>
+        </div> -->
 
         <div class="carbonEmissionTable statisticsTable">
             <p class="title bottom">碳排放計算</p>
 
             <div class="table">
 
-                <table>
-                    <tr>
-                        <td rowspan="4" scope="col" class="manufactureName title">鍛造成形</td>
-                        <td scope="col" class="name title">原料</td>
-                        <td scope="col" class="amount title">使用量</td>
-                        <td scope="col" class="carbonEmission title">碳排放係數</td>
-                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
-                    </tr>
+                <table  v-if="this.data2.pullThreadString">
+                <tr>
+                    <td rowspan="4" scope="col" class="manufactureName title">抽線</td>
+                    <td scope="col" class="name title">原料名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td scope="col" class="carbonEmission title">碳排放係數</td>
+                    <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                </tr>
 
-                    <tr class="item">
-                        <td>{{ this.data.formingString.raw[0].name }}</td>
-                        <td>{{ this.data.formingString.raw[0].amount }}<span> ( 公噸 ) </span></td>
-                        <td>{{ this.data.formingString.raw[0].carbon }}</td>
-                        <td>{{ Math.round(this.data.formingString.raw[0].carbon * this.data.formingString.raw[0].amount*100)/100 }}</td>
-                    </tr>
+                <tr class="item" v-for="item in this.data2.pullThreadString.raw">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                    <td>{{ item.amount*item.carbon }}</td>
+                </tr>
 
-                    <tr>
-                        <td class="name title">消耗/排放物</td>
-                        <td scope="col" class="amount title">使用量</td>
-                        <td class="carbonEmission title">碳排放係數</td>
-                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
-                    </tr>
+                <tr>
+                    <td class="name title">製程消耗物/排放物名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td class="carbonEmission title">碳排放係數</td>
+                    <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                </tr>
 
-                    <tr class="item">
-                        <td>{{ this.data.formingString.process[0].name }}</td>
-                        <td>{{ this.data.formingString.process[0].amount/1000 }}<span> ( 度 ) </span></td>
-                        <td>{{ this.data.formingString.process[0].carbon }}</td>
-                        <td>{{ Math.round(this.data.formingString.process[0].amount/1000 * this.data.formingString.process[0].carbon) }}</td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="4" class="name title">產物碳排放量</td>
-                        <td>{{ Math.round(this.data.formingString.process[0].amount/1000 * this.data.formingString.process[0].carbon) + Math.round(this.data.formingString.raw[0].carbon * this.data.formingString.raw[0].amount*100)/100 }}</td>
-                    </tr>
+                <tr class="item" v-for="item in this.data2.pullThreadString.process">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}</td>
+                    <td>{{ item.carbon }}</td>
+                    <td>{{ item.amount*item.carbon/(this.data2.aim*this.data2.weight/1000) }}</td>
+                </tr>
                 </table>
 
-                <table>
-                    <tr>
-                        <td rowspan="4" scope="col" class="manufactureName title">輾牙</td>
-                        <td scope="col" class="name title">原料</td>
-                        <td scope="col" class="amount title">使用量</td>
-                        <td scope="col" class="carbonEmission title">碳排放係數</td>
-                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
-                    </tr>
+                <table  v-if="this.data2.formingString">
+                <tr>
+                    <td rowspan="4" scope="col" class="manufactureName title">鍛造</td>
+                    <td scope="col" class="name title">原料名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td scope="col" class="carbonEmission title">碳排放係數</td>
+                    <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                </tr>
 
-                    <tr class="item">
-                        <td>呈上</td>
-                        <td>1<span> ( 公噸 ) </span></td>
-                        <td>14.71</td>
-                        <td>14.71</td>
-                    </tr>
+                <tr class="item" v-for="item in this.data2.formingString.raw">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                    <td>{{ item.amount*item.carbon }}</td>
+                </tr>
 
-                    <tr>
-                        <td class="name title">消耗/排放物</td>
-                        <td scope="col" class="amount title">使用量</td>
-                        <td class="carbonEmission title">碳排放係數</td>
-                        <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
-                    </tr>
+                <tr>
+                    <td class="name title">製程消耗物/排放物名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td class="carbonEmission title">碳排放係數</td>
+                    <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                </tr>
 
-                    <tr class="item">
-                        <td>電力</td>
-                        <td>0 <span> ( 度 ) </span></td>
-                        <td>0.475</td>
-                        <td>0</td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="4" class="name title">產物碳排放量</td>
-                        <td>14.71</td>
-                    </tr>
-
+                <tr class="item" v-for="item in this.data2.formingString.process">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}</td>
+                    <td>{{ item.carbon }}</td>
+                    <td>{{ item.amount*item.carbon/(this.data2.aim*this.data2.weight/1000) }}</td>
+                </tr>
                 </table>
+
+                <table  v-if="this.data2.grindTeethString">
+                <tr>
+                    <td rowspan="4" scope="col" class="manufactureName title">輾牙</td>
+                    <td scope="col" class="name title">原料名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td scope="col" class="carbonEmission title">碳排放係數</td>
+                    <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                </tr>
+
+                <tr class="item" v-for="item in this.data2.grindTeethString.raw">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                    <td>{{ item.amount*item.carbon }}</td>
+                </tr>
+
+                <tr>
+                    <td class="name title">製程消耗物/排放物名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td class="carbonEmission title">碳排放係數</td>
+                    <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                </tr>
+
+                <tr class="item" v-for="item in this.data2.grindTeethString.process">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}</td>
+                    <td>{{ item.carbon }}</td>
+                    <td>{{ item.amount*item.carbon/(this.data2.aim*this.data2.weight/1000) }}</td>
+                </tr>
+                </table>
+
+                <table  v-if="this.data2.heatTreatmentString">
+                <tr>
+                    <td rowspan="4" scope="col" class="manufactureName title">熱處理</td>
+                    <td scope="col" class="name title">原料名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td scope="col" class="carbonEmission title">碳排放係數</td>
+                    <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                </tr>
+
+                <tr class="item" v-for="item in this.data2.heatTreatmentString.raw">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                    <td>{{ item.amount*item.carbon }}</td>
+                </tr>
+
+                <tr>
+                    <td class="name title">製程消耗物/排放物名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td class="carbonEmission title">碳排放係數</td>
+                    <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                </tr>
+
+                <tr class="item" v-for="item in this.data2.heatTreatmentString.process">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}</td>
+                    <td>{{ item.carbon }}</td>
+                    <td>{{ item.amount*item.carbon/(this.data2.aim*this.data2.weight/1000) }}</td>
+                </tr>
+                </table>
+
+                <table  v-if="this.data2.electroplatingString">
+                <tr>
+                    <td rowspan="4" scope="col" class="manufactureName title">電鍍</td>
+                    <td scope="col" class="name title">原料名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td scope="col" class="carbonEmission title">碳排放係數</td>
+                    <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                </tr>
+
+                <tr class="item" v-for="item in this.data2.electroplatingString.raw">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}<span> ( 公噸 ) </span></td>
+                    <td>{{ item.carbon }}</td>
+                    <td>{{ item.amount*item.carbon }}</td>
+                </tr>
+
+                <tr>
+                    <td class="name title">製程消耗物/排放物名稱</td>
+                    <td scope="col" class="amount title">使用量</td>
+                    <td class="carbonEmission title">碳排放係數</td>
+                    <td scope="col" class="carbonEmissionAmount title">碳排放量</td>
+                </tr>
+
+                <tr class="item" v-for="item in this.data2.electroplatingString.process">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.amount }}</td>
+                    <td>{{ item.carbon }}</td>
+                    <td>{{ item.amount*item.carbon/(this.data2.aim*this.data2.weight/1000) }}</td>
+                </tr>
+                </table>
+
             </div>
 
         </div>
 
 
-        <div class="linkArea">
+        <!-- <div class="linkArea">
             <button>統計圖呈現</button>
-        </div>
+        </div> -->
 
 
     </div>
@@ -886,7 +1031,18 @@ export default {
 }
 
 // 特殊樣式：該單號的流程
-.need {
-    background-color: var(--greenLight);
+.manufactureBlock{
+    .manufactureFlow{
+
+        .oneFlow{
+            .need {
+                background-color: var(--green);
+            }
+        }
+
+        .need{
+            border-color: var(--green);
+        }
+    }
 }
 </style>

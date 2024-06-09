@@ -19,21 +19,21 @@ const router = createRouter({
       name: 'StatusOrder',
       component: () => import('../views/StatusOrder.vue')
     },
-    {
-      path: '/login',
-      name: 'Login',
-      component: () => import('../views/Login.vue')
-    },
-    {
-      path: '/member/machine',
-      name: 'MemberMachine',
-      component: ()=> import('../views/MemberMachine.vue')
-    },
-    {
-      path: '/member/order',
-      name: 'MemberOrder',
-      component: ()=> import('../views/MemberOrder.vue')
-    },
+    // {
+    //   path: '/login',
+    //   name: 'Login',
+    //   component: () => import('../views/Login.vue')
+    // },
+    // {
+    //   path: '/member/machine',
+    //   name: 'MemberMachine',
+    //   component: ()=> import('../views/MemberMachine.vue')
+    // },
+    // {
+    //   path: '/member/order',
+    //   name: 'MemberOrder',
+    //   component: ()=> import('../views/MemberOrder.vue')
+    // },
   ]
 })
 

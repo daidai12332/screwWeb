@@ -59,7 +59,6 @@ export default{
                     return;
                 }
 
-                console.log(data.orderAndMachineList);
                 if(!data.orderAndMachineList){
                     return;
                 }
@@ -296,10 +295,10 @@ export default{
         }
 
         .note{
-            #countdownLineForMachineDetail{
+            #countdownLineForOrderDetail{
                 width: 100%;
                 height: 0.5vh;
-                background-color: var(--green);
+                background-color: var(--greenLight);
             }
 
             table{

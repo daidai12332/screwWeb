@@ -54,9 +54,6 @@ export default{
                 for(let index in data.orderAndMachineList){
                     this.dataList.push(data.orderAndMachineList[index]);
                 }
-
-                // 設定倒數動畫
-                this.setCountdownAnimation();
                 
                 // 設定單頁呈現資料
                 this.getShowData();
@@ -98,6 +95,9 @@ export default{
         // 設定單頁呈現資料
         getShowData(){
             this.pageNow ++;
+            
+            // 設定倒數動畫
+            this.setCountdownAnimation();
 
             // 若已翻到最後一頁
             if( this.pageNow > this.totalPage){

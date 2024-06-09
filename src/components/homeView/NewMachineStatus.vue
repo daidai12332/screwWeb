@@ -60,14 +60,9 @@ export default{
                         this.errorNotify.push(data.machineDataList[index].name);
                     }
                 }
-
-                // 設定倒數動畫
-                // this.setCountdownAnimation();
                 
                 // 設定單頁呈現資料
                 this.getShowData();
-
-                // 傳送公告
                 
                 // 若有 error 發送通知
                 if(this.errorNotify.length){
@@ -114,7 +109,10 @@ export default{
         // 設定單頁呈現資料
         getShowData(){
             this.pageNow ++;
+
+            // 設定倒數動畫
             this.setCountdownAnimation();
+
             // 若已翻到最後一頁
             if( this.pageNow > this.totalPage){
                 this.getNewestData();

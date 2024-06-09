@@ -306,7 +306,7 @@ export default{
             #countdownLineForMachineDetail{
                 width: 100%;
                 height: 0.5vh;
-                background-color: var(--yellow);
+                background-color: var(--yellowLight);
             }
 
             table{

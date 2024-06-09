@@ -28,22 +28,6 @@ export default{
             // 畫面呈現
             dataDynamic: null,
 
-            // 資料儲存
-            // machineName : machineDetail.name,
-            // machineUsage : machineDetail2.status,
-            // status : machineDetail.status,
-            // machineType : machineDetail.type,
-            // voltage : machineDetail2.voltage,
-            // buyTime : machineDetail2.purchaseDate,
-            // buyLocation : machineDetail2.location,
-            // buyPrice : machineDetail2.price,
-            // fixFreeExp : machineDetail2.warrantyDate,
-            // useExp : machineDetail2.lifespan,
-            // fixPerson : machineDetail2.maintenanceStaff,
-            // fixPhone : machineDetail2.phone,
-            // fixEmail : machineDetail2.email,
-            // fixAdress : machineDetail2.address,
-            // note : machineDetail2.note,
         }
     },
     props:[
@@ -71,7 +55,7 @@ export default{
             <div class="line" v-if="this.machineDetail">
                 <label for="machineName">　名稱　</label><input id="machineName" type="text" :value="this.machineDetail.name" disabled>
             </div>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <label for="machineUsage">使用狀態</label>
                 <select name="machineUsage" id="machineUsage" :value="this.machineDetail2.status" disabled>
                     <option value="true">使用中</option>
@@ -91,7 +75,7 @@ export default{
                     <option value="電鍍機">電鍍機</option>
                 </select>
             </div>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <label for="voltage">　電壓　</label><input id="voltage" type="number" :value="this.machineDetail2.voltage" disabled>
                 <span> 伏特</span>
             </div>
@@ -99,43 +83,43 @@ export default{
         
         <div class="buyInfo infoBlock">
             <p>採購</p>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <label for="buyTime">購買時間</label><input id="buyTime" type="date" :value="this.machineDetail2.purchaseDate" disabled>                
             </div>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <label for="buyLocation">購買地點</label><input id="buyLocation" type="text" :value="this.machineDetail2.location" disabled>
             </div>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <label for="buyPrice">購買價格</label><input id="buyPrice" type="number" :value="this.machineDetail2.price" disabled>
                 <span> 元</span>
             </div>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <label for="fixFreeExp">保固日期</label><input id="fixFreeExp" type="date" :value="this.machineDetail2.warrantyDate" disabled>
             </div>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <label for="useExp">使用年限</label><input id="useExp" type="date" :value="this.machineDetail2.lifespan" disabled>
             </div>
         </div>
 
         <div class="fixInfo infoBlock">
             <p>維修</p>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <label for="fixPerson">維修人員姓名</label><input id="fixPerson" type="text" :value="this.machineDetail2.maintenanceStaff" disabled>
             </div>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <label for="fixPhone">　　電話　　</label><input id="fixPhone" type="tel" :value="this.machineDetail2.phone" disabled>
             </div>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <label for="fixEmail">　　電郵　　</label><input id="fixEmail" type="email" :value="this.machineDetail2.email" disabled>
             </div>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <label for="fixAdress">　　地址　　</label><input id="fixAdress" type="text" :value="this.machineDetail2.address" disabled>
             </div>
         </div>
 
         <div class="noteInfo infoBlock" >
             <p>備註</p>
-            <div class="line" v-if="this.machineDetail">
+            <div class="line" v-if="this.machineDetail2">
                 <textarea name="note" id="noteInfo" :value="this.machineDetail2.note" disabled></textarea>
             </div>
         </div>
@@ -155,18 +139,12 @@ export default{
                     </tr>
                 </thead>
     
-                <tbody v-if="this.machineDetail">
-                    <tr>
-                        <td>2024-05-21</td>
-                        <td>定期保養</td>
-                        <td class="fixResult">良好</td>
-                        <td class="fixNote">須注意清潔</td>
-                    </tr>
-                    <tr>
-                        <td>2024-05-22</td>
-                        <td>定期保養</td>
-                        <td class="fixResult">良好</td>
-                        <td class="fixNote">須注意清潔</td>
+                <tbody v-if="this.machineDetail3">
+                    <tr v-for="item in this.machineDetail3">
+                        <td>{{ item.time.toString().substring(0,10) }}</td>
+                        <td>{{ item.reason }}</td>
+                        <td class="fixResult">{{ item.result }}</td>
+                        <td class="fixNote">{{ item.note }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -192,24 +170,24 @@ export default{
                     </thead>
     
                     <tbody>
-                        <tr v-for="i in 10">
-                            <td>{{ i-1 }}:00-{{ i }}:00</td>
-                            <td>300</td>
-                            <td>50000</td>
-                            <td class="fixResult">80%</td>
-                            <td class="fixNote">80%</td>
+                        <tr v-for="item in this.staticData1">
+                            <td>{{ item.time }}</td>
+                            <td>{{ item.power }}</td>
+                            <td>{{ item.pass }}</td>
+                            <td class="fixResult">{{ item.passAvg }}</td>
+                            <td class="fixNote">{{ item.runAvg }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <div class="averageTable statisticsTable">
+        <div class="averageTable statisticsTable" v-if="this.staticData3">
 
             <p>歷史資料</p>
             <div class="table">
-                <p>統計時間：2024-05-31 ~ 2024-06-06</p>
-                <table>
+                <p>統計時間：{{ this.staticData2.startTime }} - {{ this.staticData2.endTime }}</p>
+                <table v-if="this.staticData2">
                     <thead>
                         <tr>
                             <th scope="col" class="avgCurrent">平均耗電量(瓦特)</th>
@@ -220,9 +198,9 @@ export default{
     
                     <tbody>
                         <tr>
-                            <td>300</td>
-                            <td>80%</td>
-                            <td>80%</td>
+                            <td>{{ this.staticData2.data.power }}</td>
+                            <td>{{ this.staticData2.data.passAvg }}</td>
+                            <td>{{ this.staticData2.data.runAvg }}</td>
                         </tr>
                     </tbody>                    
                 </table>
@@ -237,9 +215,9 @@ export default{
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>定期保養</td>
-                            <td>2</td>
+                        <tr v-for="item in this.staticData3">
+                            <td>{{ item.reason }}</td>
+                            <td>{{ item.count }}</td>
                         </tr>
                     </tbody>
 
@@ -248,9 +226,9 @@ export default{
 
         </div>
         
-        <div class="linkArea">
+        <!-- <div class="linkArea">
             <button>統計圖呈現</button>
-        </div>
+        </div> -->
     </div>
 </template>
 

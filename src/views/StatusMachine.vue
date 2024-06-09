@@ -4,15 +4,6 @@ import List from '../components/statusMachine/List.vue'
 import ListShow from '../components/statusMachine/ListShow.vue'
 
 export default {
-    // mounted() {
-    //     console.log("MachineStatus");
-    //     // 修改所在介面顏色
-    //     const showService = useShowStore();
-    //     showService.modeChange(1);
-    //     console.log(showService.mode);
-    //     // 獲得機台資料
-    //     this.getDataNow();
-    // },
 
     methods: {
         // 抓取資料庫新資料
@@ -71,16 +62,12 @@ export default {
                     return;
                 }
 
-                for( let index in data.maintenanceList){
-                    if(data.maintenanceList[index].name === machineName){
-                        this.dataShow3 = data.maintenanceList[index]
-                    }
-                }
-
+                this.dataShow3 = data.maintenanceList;
             });
 
         },
 
+        // 取得即時資料
         getData1(name){
             
             // 進入資料庫
@@ -103,12 +90,14 @@ export default {
                 if(!data.equipmentHourList){
                     return;
                 }
+
                 this.staticData1 = data.equipmentHourList;
 
             });
         },
 
         getData2(name){
+            console.log();
             // 進入資料庫
             fetch(`http://localhost:8080/screw/machineWeekAvg?name=${name}`,{
                 method: 'POST',
@@ -128,9 +117,9 @@ export default {
 
                 if(!data.equipmentWeek){
                     return;
-                }
-                this.staticData2.startTime = data.startTime
-                this.staticData2.endTime = data.endTime
+                    }
+                this.staticData2.startTime = data.startTime.toString().substring(0,10);
+                this.staticData2.endTime = data.endTime.toString().substring(0,10);
                 this.staticData2.data = data.equipmentWeek;
             });
 
@@ -165,6 +154,7 @@ export default {
         changeMode(){
             this.isList = !this.isList;
         },
+
         getDetail(detail){
             this.dataShow = detail;
             this.getNewestData(detail.name);
@@ -183,7 +173,7 @@ export default {
             dataShow2: null,
             dataShow3: null,
             staticData1: null,
-            staticData2: null,
+            staticData2: {},
             staticData3: null,
         }
     },
